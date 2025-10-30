@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "../Application.h"
 
 class TitleScene : public SceneBase
 {
@@ -26,6 +27,12 @@ public:
 
 private:
 
+	static constexpr int IMG_TITLE_X = (Application::SCREEN_HALF_X - 250);
+	static constexpr int IMG_TITLE_Y = 85;
 
+	static constexpr int IMG_PUSH_X = (Application::SCREEN_HALF_X - 250);
+	static constexpr int IMG_PUSH_Y = (Application::SCREEN_HALF_Y + 125);
 
+	int imgTitle_;
+	int imgPushSpace_;
 };

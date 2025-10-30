@@ -11,6 +11,16 @@ public:
 	// リソース名
 	enum class SRC
 	{
+		IMG_TITLE,
+		IMG_SHADOW,
+		IMG_PUSH_SPACE,
+
+		MODEL_PLAYER,
+		MODEL_RAT,
+		MODEL_RAT_BODY,
+		MODEL_RAT_HEAD,
+		MODEL_GOAL_STER,
+		
 	};
 
 	// 明示的にインステンスを生成する
@@ -28,8 +38,10 @@ public:
 	// リソースの完全破棄
 	void Destroy(void);
 
-	// リソースのロード
-	const Resource& Load(SRC src);
+	
+
+	int GetHandleId(SRC src) { return Load(src).handleId_; };
+	int& GetHandleIds(SRC src) { return *Load(src).handleIds_; };
 
 	// リソースの複製ロード(モデル用)
 	int LoadModelDuplicate(SRC src);
@@ -52,6 +64,9 @@ private:
 	ResourceManager(void);
 	ResourceManager(const ResourceManager& manager) = default;
 	~ResourceManager(void) = default;
+
+	// リソースのロード
+	const Resource& Load(SRC src);
 
 	// 内部ロード
 	Resource& _Load(SRC src);
