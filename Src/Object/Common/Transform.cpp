@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../Utility/AsoUtility.h"
+#include "../../Utility/MatrixUtility.h"
 #include "Transform.h"
 
 Transform::Transform(void)
@@ -24,7 +25,6 @@ Transform::~Transform(void)
 
 void Transform::Update(void)
 {
-
 	// ‘å‚«‚³
 	matScl = MGetScale(scl);
 
@@ -57,6 +57,37 @@ void Transform::Release(void)
 void Transform::SetModel(int model)
 {
 	modelId = model;
+}
+
+void Transform::InitTransform(const VECTOR& _scl, const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos)
+{
+	scl = _scl;
+	quaRot = _rot;
+	quaRotLocal = _rotLocal;
+	pos = _pos;
+
+	Update();
+}
+void Transform::InitTransform(float _scl, const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos)
+{
+	InitTransform({ _scl,_scl,_scl }, _rot, _rotLocal, _pos);
+}
+void Transform::InitTransform(void)
+{
+	InitTransform(AsoUtility::VECTOR_ONE,
+				  Quaternion::Identity(), Quaternion::Identity(),
+				  AsoUtility::VECTOR_ZERO);
+}
+
+void Transform::Rotate(const Quaternion& rot)
+{
+	quaRot = Quaternion::Mult(quaRot,rot);
+	Update();
+}
+void Transform::Rotate(const VECTOR& _axis, float _pow)
+{
+	Quaternion qua = Quaternion::AngleAxis(_pow, _axis);
+	Rotate(qua);
 }
 
 VECTOR Transform::GetForward(void) const

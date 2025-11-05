@@ -41,6 +41,26 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");
 	resourcesMap_.emplace(SRC::IMG_SHADOW, res);
 
+
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/MainStage.mv1");
+	resourcesMap_.emplace(SRC::MODEL_STAGE_MAIN, res);
+
+
+	res = new RES(RES::TYPE::MODEL, PATH_MDL + "Player/Player.mv1");
+	resourcesMap_.emplace(SRC::MODEL_PLAYER, res);
+
+	res = new RES(RES::TYPE::MODEL, PATH_MDL + "Stage/PitfallPlanet/PitfallPlanet.mv1");
+	resourcesMap_.emplace(SRC::MODEL_PLANET_PITFALL, res);
+
+	res = new RES(RES::TYPE::MODEL, PATH_MDL + "Stage/SpherePlanet/SpherePlanet.mv1");
+	resourcesMap_.emplace(SRC::MODEL_PLANET_SPHERE, res);
+
+	res = new RES(RES::TYPE::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
+	resourcesMap_.emplace(SRC::MODEL_SKYDOME, res);
+
+
+	res = new RES(RES::TYPE::MODEL, PATH_MDL + "Player/Run.mv1");
+	resourcesMap_.emplace(SRC::ANIM_PLAYER_RUN, res);
 }
 
 void ResourceManager::Release(void)

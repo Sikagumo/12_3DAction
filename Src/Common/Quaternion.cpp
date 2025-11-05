@@ -65,6 +65,14 @@ Quaternion Quaternion::Euler(double radX, double radY, double radZ)
 
 }
 
+Quaternion Quaternion::Euler(float radX, float radY, float radZ)
+{
+    double x = AsoUtility::Deg2RadD(static_cast<double>(radX));
+    double y = AsoUtility::Deg2RadD(static_cast<double>(radY));
+    double z = AsoUtility::Deg2RadD(static_cast<double>(radZ));
+    return Euler(x,y,z);
+}
+
 Quaternion Quaternion::Mult(const Quaternion& q1, const Quaternion& q2)
 {
 
@@ -142,6 +150,12 @@ Quaternion Quaternion::AngleAxis(double rad, VECTOR axis)
 
     return ret;
 
+}
+
+Quaternion Quaternion::AngleAxis(float _deg, VECTOR axis)
+{
+    double rad = AsoUtility::Deg2RadD(static_cast<double>(_deg));
+    return AngleAxis(rad, axis);
 }
 
 VECTOR Quaternion::PosAxis(const Quaternion& q, VECTOR pos)

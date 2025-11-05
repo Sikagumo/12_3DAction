@@ -51,6 +51,19 @@ public:
 	// モデルのハンドルIDを設定
 	void SetModel(int modelHId);
 
+	/// @brief 数値初期
+	void InitTransform(const VECTOR& _scl,const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos);
+	void InitTransform(float _scl,const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos);
+	void InitTransform(void);
+
+	/// @brief 回転処理
+	void Rotate(const Quaternion& _rot);
+
+	/// @brief 回転処理
+	/// @param _axis 回転方向
+	/// @param _pow 速度
+	void Rotate(const VECTOR& _axis, float _pow);
+
 	// 前方方向を取得
 	VECTOR GetForward(void) const;
 

@@ -24,6 +24,7 @@ public:
 	// オイラー角からクォータニオンへ変換
 	static Quaternion Euler(const VECTOR& rad);
 	static Quaternion Euler(double radX, double radY, double radZ);
+	static Quaternion Euler(float radX, float radY, float radZ);
 
 	// クォータニオンの合成
 	static Quaternion Mult(const Quaternion& q1, const Quaternion& q2);
@@ -31,6 +32,7 @@ public:
 
 	// 指定軸を指定角分、回転させる
 	static Quaternion AngleAxis(double rad, VECTOR axis);
+	static Quaternion AngleAxis(float deg, VECTOR axis);
 
 	// 座標を回転させる
 	static VECTOR PosAxis(const Quaternion& q, VECTOR pos);
