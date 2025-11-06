@@ -5,6 +5,7 @@
 
 class ResourceManager
 {
+	using RES_TYPE = Resource::TYPE;
 
 public:
 
@@ -24,7 +25,20 @@ public:
 		MODEL_STAGE_MAIN,
 		MODEL_SKYDOME,
 
+		ANIM_PLAYER_IDLE,
 		ANIM_PLAYER_RUN,
+		ANIM_PLAYER_RUN_FAST,
+		ANIM_PLAYER_ATTACK2,
+		ANIM_PLAYER_ATTACK3,
+		ANIM_PLAYER_FALLING,
+		ANIM_PLAYER_JUMPING,
+		ANIM_PLAYER_JUMP_ATTACK,
+		ANIM_PLAYER_JUMP_HOVER,
+		ANIM_PLAYER_JUMP_RESING,
+		ANIM_PLAYER_SHOT,
+		ANIM_PLAYER_VICTORY,
+		ANIM_PLAYER_WARP,
+
 	};
 
 	// 明示的にインステンスを生成する
@@ -74,5 +88,14 @@ private:
 
 	// 内部ロード
 	Resource& _Load(SRC src);
+
+	// 画像読み込み
+	void SetResourceImage(void);
+
+	// モデル読み込み
+	void SetResourceModel(void);
+
+	// アニメーション読み込み
+	void SetResourceAnim(void);
 
 };

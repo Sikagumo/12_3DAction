@@ -14,6 +14,7 @@ public:
 		IMG,
 		IMGS,
 		MODEL,
+		ANIM,
 		EFFEKSEER
 	};
 

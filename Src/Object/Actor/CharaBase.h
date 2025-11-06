@@ -20,6 +20,8 @@ public:
 	// デストラクタ
 	virtual ~CharaBase(void) override = default;
 
+	virtual void Update(void)override;
+
 	void Release(void)override;
 
 protected:
@@ -27,4 +29,6 @@ protected:
 	AnimationController* anim_;
 
 	virtual void InitAnimation(void)override;
+
+	void PlayAnim(ANIM_TYPE type, bool _isLoop = true);
 };

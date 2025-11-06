@@ -27,4 +27,20 @@ protected:
 
 	// 初期化後の個別処理
 	void InitPost(void)override;
+
+private:
+
+	// 移動速度(通常)
+	static constexpr float SPEED_MOVE = 5.0f;
+
+	// 移動速度(ダッシュ)
+	static constexpr float SPEED_DASH = 10.0f;
+
+
+	VECTOR movePow_;
+
+	// 操作
+	void ProcessMove(void);
+
+
 };

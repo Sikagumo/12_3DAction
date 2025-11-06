@@ -204,19 +204,15 @@ void Camera::ProcessMove(void)
 
 	if (GetJoypadNum() == 0)
 	{
-		if (ins.IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
-		if (ins.IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
-		if (ins.IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
-		if (ins.IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
+		if (ins.KeyIsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
+		if (ins.KeyIsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
+		if (ins.KeyIsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
+		if (ins.KeyIsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
 	}
 	else
 	{
-
-		InputManager::JOYPAD_IN_STATE padState =
-			ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
 		// 左スティックの傾き
-		moveDir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
+		moveDir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::LEFT);
 
 	}
 
@@ -285,19 +281,19 @@ void Camera::RotKeyboard(bool isLimit)
 	const auto& ins = InputManager::GetInstance();
 
 	// カメラ回転
-	if (ins.IsNew(KEY_INPUT_RIGHT))
+	if (ins.KeyIsNew(KEY_INPUT_RIGHT))
 	{
 		// 右回転
 		angles_.y += ROT_POW_RAD;
 	}
-	if (ins.IsNew(KEY_INPUT_LEFT))
+	if (ins.KeyIsNew(KEY_INPUT_LEFT))
 	{
 		// 左回転
 		angles_.y -= ROT_POW_RAD;
 	}
 
 	// 上回転
-	if (ins.IsNew(KEY_INPUT_UP))
+	if (ins.KeyIsNew(KEY_INPUT_UP))
 	{
 		angles_.x += ROT_POW_RAD;
 		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
@@ -307,7 +303,7 @@ void Camera::RotKeyboard(bool isLimit)
 	}
 
 	// 下回転
-	if (ins.IsNew(KEY_INPUT_DOWN))
+	if (ins.KeyIsNew(KEY_INPUT_DOWN))
 	{
 		angles_.x -= ROT_POW_RAD;
 		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
@@ -323,12 +319,8 @@ void Camera::RotGamePad(bool isLimit)
 
 	auto& ins = InputManager::GetInstance();
 
-	// 接続されているゲームパッド１の情報を取得
-	InputManager::JOYPAD_IN_STATE padState =
-		ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
 	// 右スティックの傾き
-	VECTOR dir = ins.GetDirectionXZAKey(padState.AKeyRX, padState.AKeyRY);
+	VECTOR dir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::LEFT);
 
 	// 右スティック左右の傾き
 	angles_.y += dir.x * ROT_POW_RAD;

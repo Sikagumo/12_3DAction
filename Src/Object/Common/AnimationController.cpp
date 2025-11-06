@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <string>
 #include <cassert>
+#include <algorithm>
 #include "../../Manager/SceneManager.h"
 
 AnimationController::AnimationController(int _modelId)
@@ -84,7 +85,7 @@ void AnimationController::AddExternal(int _type, float _speed, int _handle)
 void AnimationController::Play(int _type, bool _isLoop, float _blendTime)
 {
 	// 同じアニメーション時、処理を終了
-	if (playType_ == _type) { return; }
+	if (playType_ == _type || _type == -1) { return; }
 
 	if (prePlayType_ != -1)
 	{
@@ -214,19 +215,15 @@ void AnimationController::Release(void)
 	// ロードしたアニメーションを解放
 	for (auto& [type, anim] : animations_)
 	{
+		// アニメーションをリセット
+		MV1DetachAnim(modelId_, anim.attachNo);
+
 		// パス読み込みでの外部アニメーション時
 		if (anim.type == ANIM_TYPE::EXTERNAL &&
 			anim.isLoadPath)
 		{
 			// アニメーション解放
 			MV1DeleteModel(anim.modelId);
-		}
-		
-		// 取付られているアニメーションの場合
-		if (anim.type == ANIM_TYPE::INTERNAL)
-		{
-			// アニメーションをリセット
-			MV1DetachAnim(modelId_, anim.attachNo);
 		}
 	}
 
@@ -266,16 +263,11 @@ bool AnimationController::IsEndPoint(float _pointStart, float _pointEnd)
 {
 	auto& anim = animations_.at(playType_);
 
-	float start = _pointStart;
-	float end = _pointEnd;
+	// 再生位置
+	float start = std::clamp(_pointStart, 0.0f, 1.0f);
 
-	// 再生位置の上限制限
-	start = ((start < 0.0f) ? 0.0f : start);
-	start = ((start > 1.0f) ? 1.0f : start);
-
-	// 再生位置の上限制限
-	end = ((end < 0.0f) ? 0.0f : end);
-	end = ((end > 1.0f) ? 1.0f : end);
+	// 終了位置
+	float end = std::clamp(_pointEnd, 0.0f, 1.0f);
 
 	// 再生位置の割合
 	float curRate = (anim.step / anim.totalTime);
