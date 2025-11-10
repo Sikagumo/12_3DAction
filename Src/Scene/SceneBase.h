@@ -31,6 +31,6 @@ protected:
 	ResourceManager& resMng_;
 
 	// ƒV[ƒ“ŠÇ—
-	SceneManager& sceMng_;
+	SceneManager& sceneMng_;
 
 };

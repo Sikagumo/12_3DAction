@@ -53,6 +53,10 @@ private:
 
 	SkyDome* skyDome_;
 
+	// スカイドーム用の空のトランスフォーム
+	Transform empty_;
+
+
 	Transform bigPlant_;
 	Transform spherePlant_;
 	Transform player_;

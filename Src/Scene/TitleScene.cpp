@@ -49,21 +49,22 @@ void TitleScene::Init(void)
 	playerAnim_->AddExternal(0, 30.0f, resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_RUN));
 	playerAnim_->Play(0);
 
-	skyDome_ = new SkyDome();
+	skyDome_ = new SkyDome(empty_);
 	skyDome_->Init();
 
 	// 定点カメラ
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
+	sceneMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 
 }
 
 void TitleScene::Update(void)
 {
 	// シーン遷移
-	auto const& ins = InputManager::GetInstance();
-	if (ins.KeyIsTrgDown(KEY_INPUT_SPACE))
+	InputManager& input = InputManager::GetInstance();
+	if (input.KeyIsTrgDown(KEY_INPUT_SPACE) ||
+		input.PadIsBtnTrgDown(InputManager::PAD_NO::PAD1, InputManager::PAD_BTN::START))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+		sceneMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 	}
 
 	spherePlant_.Rotate(AsoUtility::AXIS_Z, 1.0f);

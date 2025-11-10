@@ -1,9 +1,10 @@
+#include "Camera.h"
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "../Object/Common/Transform.h"
-#include "Camera.h"
+
 
 Camera::Camera(void)
 	:
@@ -30,7 +31,7 @@ Camera::~Camera(void)
 void Camera::Init(void)
 {
 
-	ChangeMode(MODE::FIXED_POINT);
+	ChangeMode(MODE::FOLLOW);
 
 }
 

@@ -480,7 +480,7 @@ VECTOR Quaternion::GetUp(void) const
 
 VECTOR Quaternion::GetDown(void) const
 {
-    return GetDir(AsoUtility::DIR_D);
+    return GetDir(AsoUtility::DIR_DOWN);
 }
 
 double Quaternion::Dot(const Quaternion& q1, const Quaternion& q2)

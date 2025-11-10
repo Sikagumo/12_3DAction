@@ -1,11 +1,16 @@
 #include "Player.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Utility/AsoUtility.h"
+#include "../../Utility/MatrixUtility.h"
 #include "../Common/AnimationController.h"
 #include "../../Manager/InputManager.h"
+#include "../../Manager/SceneManager.h"
+#include "../../Manager/Camera.h"
+#include "../Collider/ColliderLine.h"
 
 
 Player::Player(void)
+	:movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
 
@@ -23,6 +28,12 @@ void Player::InitTransform(void)
 
 void Player::InitCollider(void)
 {
+	// 主に地面との衝突で仕様する線分コライダ
+	ColliderLine* colLine = new ColliderLine(ColliderBase::TAG::PLAYER, &transform_,
+											 COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
+
+	// 当たり判定リストに格納
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 }
 
 void Player::InitAnimation(void)
@@ -42,18 +53,17 @@ void Player::InitPost(void)
 {
 }
 
-void Player::Update(void)
+void Player::UpdateProcess(void)
 {
-	CharaBase::Update();
+}
 
+void Player::UpdateProcessPost(void)
+{
 	// 移動操作
 	ProcessMove();
 
 	// 移動処理
 	transform_.pos = VAdd(transform_.pos, movePow_);
-
-	// 3Dの基礎情報更新
-	transform_.Update();
 }
 
 void Player::ProcessMove(void)
@@ -79,6 +89,15 @@ void Player::ProcessMove(void)
 	{
 		movePow_ = AsoUtility::VECTOR_ZERO;
 
+		// カメラの方向で進行
+		VECTOR cameraAngle = SceneManager::GetInstance().GetCamera()->GetAngles();
+		cameraAngle.y = AsoUtility::Deg2RadF(cameraAngle.y);
+		MATRIX cameraMat = MatrixUtility::GetMatrixRotateXYZ(cameraAngle);
+
+		// 移動方向を取得
+		moveDir_ = VTransform(dir, cameraMat);
+
+
 		// ダッシュ処理
 		if (input.KeyIsNew(KEY_INPUT_LSHIFT) && GetJoypadNum() <= 0 ||
 			input.PadIsBtnNew(1,static_cast<int>(InputManager::PAD_BTN::R_TRIGGER)) && GetJoypadNum() > 0)
@@ -91,10 +110,8 @@ void Player::ProcessMove(void)
 			PlayAnim(ANIM_TYPE::RUN);
 		}
 
-		dir = VNorm(dir);
-
 		// 加速度に割り当て
-		movePow_ = VScale(dir, speed);
+		movePow_ = VScale(moveDir_, speed);
 	}
 	else
 	{

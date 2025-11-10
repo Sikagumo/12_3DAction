@@ -9,8 +9,6 @@ public:
 
 	~Player(void)override = default;
 
-	void Update(void)override;
-
 protected:
 
 	// リソースロード
@@ -28,6 +26,12 @@ protected:
 	// 初期化後の個別処理
 	void InitPost(void)override;
 
+	// 更新処理
+	void UpdateProcess(void)override;
+
+	// 
+	void UpdateProcessPost(void)override;
+
 private:
 
 	// 移動速度(通常)
@@ -36,11 +40,15 @@ private:
 	// 移動速度(ダッシュ)
 	static constexpr float SPEED_DASH = 10.0f;
 
+	// 衝突判定用線分開始
+	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
+
+	// 衝突判定用線分終了
+	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
+
 
 	VECTOR movePow_;
 
 	// 操作
 	void ProcessMove(void);
-
-
 };

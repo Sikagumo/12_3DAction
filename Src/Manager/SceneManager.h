@@ -59,6 +59,8 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+
+
 private:
 
 	// 静的インスタンス

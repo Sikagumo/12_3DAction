@@ -26,7 +26,7 @@ public:
 	static constexpr VECTOR DIR_R = { 1.0f, 0.0f, 0.0f };
 	static constexpr VECTOR DIR_L = { -1.0f, 0.0f, 0.0f };
 	static constexpr VECTOR DIR_U = { 0.0f, 1.0f, 0.0f };
-	static constexpr VECTOR DIR_D = { 0.0f, -1.0f, 0.0f };
+	static constexpr VECTOR DIR_DOWN = { 0.0f, -1.0f, 0.0f };
 
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
 

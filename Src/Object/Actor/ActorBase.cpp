@@ -1,11 +1,12 @@
+#include "ActorBase.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
-#include "ActorBase.h"
+#include "./ColliderBase.h"
 
 ActorBase::ActorBase(void)
 	: 
 	resMng_(ResourceManager::GetInstance()),
-	scnMng_(SceneManager::GetInstance()),
+	sceneMng_(SceneManager::GetInstance()),
 	transform_()
 {
 }
@@ -40,11 +41,24 @@ void ActorBase::Draw(void)
 	{
 		MV1DrawModel(transform_.modelId);
 	}
+#ifdef _DEBUG
+	// 所有しているコライダの描画
+	for (const auto& own : ownColliders_)
+	{
+		own.second->Draw();
+	}
+#endif // _DEBUG
 }
 
 void ActorBase::Release(void)
 {
 	transform_.Release();
+
+	// 自身のコライダ解放
+	for (auto& own : ownColliders_)
+	{
+		delete own.second;
+	}
 }
 
 const Transform& ActorBase::GetTransform(void) const

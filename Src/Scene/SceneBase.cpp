@@ -5,7 +5,7 @@
 SceneBase::SceneBase(void) 
 	: 
 	resMng_(ResourceManager::GetInstance()),
-	sceMng_(SceneManager::GetInstance())
+	sceneMng_(SceneManager::GetInstance())
 {
 }
 

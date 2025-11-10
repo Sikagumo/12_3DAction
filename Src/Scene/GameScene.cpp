@@ -6,6 +6,7 @@
 #include "../Object/Stage/Stage.h"
 #include "../Object/SkyDome/SkyDome.h"
 #include "../Object/Player/Player.h"
+#include "../Manager/Camera.h"
 
 
 GameScene::GameScene(void)
@@ -23,11 +24,15 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
-	skyDome_ = new SkyDome();
-	skyDome_->Init();
-
 	player_ = new Player();
 	player_->Init();
+
+	skyDome_ = new SkyDome(player_->GetTransform());
+	skyDome_->Init();
+
+	Camera* camera = sceneMng_.GetCamera();
+	camera->SetFollow(&player_->GetTransform());
+	camera->Init();
 }
 
 void GameScene::Update(void)
@@ -37,13 +42,17 @@ void GameScene::Update(void)
 	InputManager& input = InputManager::GetInstance();
 	if (input.KeyIsTrgDown(KEY_INPUT_SPACE))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		sceneMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 
 	skyDome_->Update();
 
 	player_->Update();
+
+	Camera* camera = sceneMng_.GetCamera();
+	camera->SetFollow(&player_->GetTransform());
+	camera->Update();
 }
 
 void GameScene::Draw(void)

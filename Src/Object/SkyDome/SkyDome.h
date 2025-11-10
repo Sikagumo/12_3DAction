@@ -5,7 +5,14 @@ class SkyDome : public ActorBase
 {
 public:
 
-	SkyDome(void);
+	enum class STATE
+	{
+		NONE,
+		STAY,
+		FOLLOW,
+	};
+
+	SkyDome(const Transform& _transform);
 
 	~SkyDome(void)override = default;
 
@@ -13,10 +20,13 @@ public:
 
 	void Draw(void)override;
 
-	void SetPos(const VECTOR& _pos) { transform_.pos = _pos; };
-	
 
 protected:
+
+	const Transform& followTransform_;
+
+	// 状態
+	STATE state_;
 
 	// リソースロード
 	void InitLoad(void)override;
@@ -38,4 +48,13 @@ private:
 	static constexpr float SCALE = 100.0f;
 
 	static constexpr float ROT_SPEED = 0.005f;
+
+	void ChangeState(STATE _state);
+	void ChangeStateNone(void);
+	void ChangeStateStay(void);
+	void ChangeStateFollow(void);
+
+	void UpdateNone(void);
+	void UpdateStay(void);
+	void UpdateFollow(void);
 };

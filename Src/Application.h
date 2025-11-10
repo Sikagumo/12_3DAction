@@ -28,6 +28,11 @@ public:
 	static const std::string PATH_KEY_CONFIG_KEYBOARD;
 	//-------------------------------------------
 
+	// 重力
+	static constexpr float GRAVITY = 9.81f * 100.0f;
+	static constexpr float GRAVITY_SCALE = 0.7f;
+
+
 	// インスタンスを明示的に生成
 	static void CreateInstance(void);
 
@@ -48,6 +53,10 @@ public:
 
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
+
+	// 重力の取得
+	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
+
 
 private:
 
