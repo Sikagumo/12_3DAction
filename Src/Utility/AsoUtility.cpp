@@ -526,7 +526,7 @@ void AsoUtility::DrawLineXYZ(const VECTOR& pos, const MATRIX& rot, float len)
     DrawLineDir(pos, dir, 0xff0000, len);
 
     // Y
-    dir = VTransform(AsoUtility::DIR_U, rot);
+    dir = VTransform(AsoUtility::DIR_UP, rot);
     DrawLineDir(pos, dir, 0x00ff00, len);
 
     // Z

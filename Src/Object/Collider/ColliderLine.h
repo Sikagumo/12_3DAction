@@ -1,6 +1,6 @@
 #pragma once
 #include <DxLib.h>
-#include "../Actor/ColliderBase.h"
+#include "./ColliderBase.h"
 class Transform;
 
 class ColliderLine : public ColliderBase

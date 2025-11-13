@@ -28,7 +28,7 @@ public:
 	static const std::string PATH_KEY_CONFIG_KEYBOARD;
 	//-------------------------------------------
 
-	// 重力
+	// 重力(メートルの値をセンチメートルに変える)
 	static constexpr float GRAVITY = 9.81f * 100.0f;
 	static constexpr float GRAVITY_SCALE = 0.7f;
 

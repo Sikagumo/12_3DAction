@@ -6,6 +6,7 @@
 #include "../Object/Stage/Stage.h"
 #include "../Object/SkyDome/SkyDome.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Collider/ColliderBase.h"
 #include "../Manager/Camera.h"
 
 
@@ -33,6 +34,10 @@ void GameScene::Init(void)
 	Camera* camera = sceneMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->Init();
+
+	// ステージモデルのコライダーをプレイヤーに登録
+	const ColliderBase* stageCollider = stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+	player_->AddHitCollider(stageCollider);
 }
 
 void GameScene::Update(void)
@@ -40,7 +45,7 @@ void GameScene::Update(void)
 
 	// シーン遷移
 	InputManager& input = InputManager::GetInstance();
-	if (input.KeyIsTrgDown(KEY_INPUT_SPACE))
+	if (input.KeyIsTrgDown(KEY_INPUT_RETURN))
 	{
 		sceneMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}

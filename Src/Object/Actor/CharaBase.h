@@ -13,15 +13,6 @@ public:
 		MAX,
 	};
 
-
-	enum class ANIM_TYPE
-	{
-		IDLE,
-		RUN,
-		FAST_RUN,
-		MAX,
-
-	};
 	// コンストラクタ
 	CharaBase(void);
 
@@ -34,11 +25,25 @@ public:
 
 protected:
 
-	AnimationController* anim_;
+	// 最大落下速度
+	static constexpr float MAX_FALL_SPEED = -30.0f;
+
+
+	AnimationController* animation_;
 
 	VECTOR moveDir_;
 
+	VECTOR movePow_;
+
 	VECTOR jumpPow_;
+
+	// 移動前の座標
+	VECTOR prevPos_;
+
+	// ジャンプ判定
+	bool isJump_;
+
+	
 
 	virtual void InitAnimation(void)override;
 
@@ -48,7 +53,9 @@ protected:
 	// 移動方向に応じた遅延回転
 	void DelayRotate(void);
 
-	void PlayAnim(ANIM_TYPE type, bool _isLoop = true);
-
 	void CalcGravityPow(void);
+
+	// 衝突判定
+	void Collision(void);
+	void CollisionGravity(void);
 };

@@ -2,6 +2,7 @@
 #include "../Actor/ActorBase.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Utility/AsoUtility.h"
+#include "../Collider/ColliderModel.h"
 
 
 Stage::Stage(void)
@@ -31,7 +32,14 @@ void Stage::InitTransform(void)
 
 void Stage::InitCollider(void)
 {
+	// DxLib側の衝突情報セットアップ
+	MV1SetupCollInfo(transform_.modelId);
+
+	// モデルのコライダ割り当て
+	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::STAGE, &transform_);
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
 }
+
 
 void Stage::InitAnimation(void)
 {

@@ -112,7 +112,7 @@ VECTOR Transform::GetLeft(void) const
 
 VECTOR Transform::GetUp(void) const
 {
-	return GetDir(AsoUtility::DIR_U);
+	return GetDir(AsoUtility::DIR_UP);
 }
 
 VECTOR Transform::GetDown(void) const

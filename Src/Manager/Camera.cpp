@@ -15,7 +15,7 @@ Camera::Camera(void)
 	rot_(Quaternion::Identity()),
 	rotY_(Quaternion::Identity()),
 	targetPos_(AsoUtility::VECTOR_ZERO),
-	cameraUp_(AsoUtility::DIR_U)
+	cameraUp_(AsoUtility::DIR_UP)
 {
 	// DxLibの初期設定では、
 	// カメラの位置が x = 320.0f, y = 240.0f, z = (画面のサイズによって変化)、
@@ -296,20 +296,20 @@ void Camera::RotKeyboard(bool isLimit)
 	// 上回転
 	if (ins.KeyIsNew(KEY_INPUT_UP))
 	{
-		angles_.x += ROT_POW_RAD;
+		//angles_.x += ROT_POW_RAD;
 		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
 		{
-			angles_.x = LIMIT_X_UP_RAD;
+			//angles_.x = LIMIT_X_UP_RAD;
 		}
 	}
 
 	// 下回転
 	if (ins.KeyIsNew(KEY_INPUT_DOWN))
 	{
-		angles_.x -= ROT_POW_RAD;
+		//angles_.x -= ROT_POW_RAD;
 		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
 		{
-			angles_.x = -LIMIT_X_DW_RAD;
+			//angles_.x = -LIMIT_X_DW_RAD;
 		}
 	}
 

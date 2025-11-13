@@ -475,7 +475,7 @@ VECTOR Quaternion::GetLeft(void) const
 
 VECTOR Quaternion::GetUp(void) const
 {
-    return GetDir(AsoUtility::DIR_U);
+    return GetDir(AsoUtility::DIR_UP);
 }
 
 VECTOR Quaternion::GetDown(void) const
@@ -559,7 +559,7 @@ Quaternion Quaternion::FromToRotation(const VECTOR& fromDir, const VECTOR& toDir
 		float len = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
 		if (len < 0.000001f)
 		{
-			axis = AsoUtility::DIR_U;
+			axis = AsoUtility::DIR_UP;
 		}
 	}
 

@@ -5,6 +5,13 @@ class Stage : public ActorBase
 {
 public:
 
+	// Õ“Ë”»’èí•Ê
+	enum class COLLIDER_TYPE
+	{
+		MODEL = 0,
+		MAX,
+	};
+
 	Stage(void);
 
 	~Stage(void)override = default;

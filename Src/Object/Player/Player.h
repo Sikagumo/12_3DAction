@@ -5,6 +5,15 @@ class Player : public CharaBase
 {
 public:
 
+	enum class ANIM_TYPE
+	{
+		IDLE,
+		RUN,
+		FAST_RUN,
+		JUMP,
+		MAX,
+	};
+
 	Player(void);
 
 	~Player(void)override = default;
@@ -34,6 +43,17 @@ protected:
 
 private:
 
+	// 衝突判定用線分開始(ジャンプ時)
+	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS
+		= { 0.0f, 130.0f, 0.0f };
+
+	// 衝突判定用線分終了(ジャンプ時)
+	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS
+		= { 0.0f, 50.0f, 0.0f };
+	
+	// ジャンプ力
+	static constexpr float POW_JUMP = 7500.0f;
+
 	// 移動速度(通常)
 	static constexpr float SPEED_MOVE = 5.0f;
 
@@ -47,8 +67,17 @@ private:
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
 
 
-	VECTOR movePow_;
+	// 移動スピード
+	float moveSpeed_;
+
+	bool isDash_;
+
 
 	// 操作
 	void ProcessMove(void);
+
+	// ジャンプ
+	void ProcessJump(void);
+
+	void PlayAnim(ANIM_TYPE type, bool _isLoop = true);
 };

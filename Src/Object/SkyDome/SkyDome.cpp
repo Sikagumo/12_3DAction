@@ -117,4 +117,5 @@ void SkyDome::ChangeStateStay(void)
 void SkyDome::ChangeStateFollow(void)
 {
 	state_ = STATE::FOLLOW;
+	transform_.pos = followTransform_.pos;
 }

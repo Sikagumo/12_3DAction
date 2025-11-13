@@ -1,7 +1,7 @@
 #include "ActorBase.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
-#include "./ColliderBase.h"
+#include "../Collider/ColliderBase.h"
 
 ActorBase::ActorBase(void)
 	: 
@@ -17,14 +17,13 @@ ActorBase::~ActorBase(void)
 
 void ActorBase::Init(void)
 {
-
 	// リソースロード
 	InitLoad();
 
 	// Transform初期化
 	InitTransform();
 
-	// 衝突判定の初期化
+	// 衝突判定の初期化an
 	InitCollider();
 
 	// アニメーションの初期化
@@ -43,9 +42,9 @@ void ActorBase::Draw(void)
 	}
 #ifdef _DEBUG
 	// 所有しているコライダの描画
-	for (const auto& own : ownColliders_)
+	for (const auto& [type, collider] : ownColliders_)
 	{
-		own.second->Draw();
+		collider->Draw();
 	}
 #endif // _DEBUG
 }
@@ -64,4 +63,27 @@ void ActorBase::Release(void)
 const Transform& ActorBase::GetTransform(void) const
 {
 	return transform_;
+}
+
+const ColliderBase* ActorBase::GetOwnCollider(int key) const
+{
+	if (ownColliders_.count(key) == 0)
+	{
+		return nullptr;
+	}
+	return ownColliders_.at(key);
+}
+
+void ActorBase::AddHitCollider(const ColliderBase* hitCollider)
+{
+	for (const auto& c : hitColliders_)
+	{
+		// 衝突相手の登録
+		if (c == hitCollider) { return; }
+	}
+	hitColliders_.emplace_back(hitCollider);
+}
+void ActorBase::ClearHitCollider(void)
+{
+	hitColliders_.clear();
 }

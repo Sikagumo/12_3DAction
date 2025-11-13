@@ -10,7 +10,7 @@
 
 
 Player::Player(void)
-	:movePow_(AsoUtility::VECTOR_ZERO)
+	:CharaBase::CharaBase()
 {
 }
 
@@ -39,12 +39,17 @@ void Player::InitCollider(void)
 void Player::InitAnimation(void)
 {
 	CharaBase::InitAnimation();
-	anim_->AddExternal(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
+	animation_->AddExternal(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
 					   resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_IDLE));
-	anim_->AddExternal(static_cast<int>(ANIM_TYPE::RUN), 30.0f,
+
+	animation_->AddExternal(static_cast<int>(ANIM_TYPE::RUN), 30.0f,
 					   resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_RUN));
-	anim_->AddExternal(static_cast<int>(ANIM_TYPE::FAST_RUN), 30.0f,
+
+	animation_->AddExternal(static_cast<int>(ANIM_TYPE::FAST_RUN), 30.0f,
 					   resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_RUN_FAST));
+
+	animation_->AddExternal(static_cast<int>(ANIM_TYPE::JUMP), 30.0f,
+					   resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_JUMPING));
 
 	PlayAnim(ANIM_TYPE::IDLE);
 }
@@ -55,15 +60,40 @@ void Player::InitPost(void)
 
 void Player::UpdateProcess(void)
 {
+	ProcessJump();
+
+	// 移動操作
+	ProcessMove();
+
+	// アニメーションごとの線分調整
+	if (animation_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
+	{
+		// ジャンプ中は線分を伸ばす
+		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
+		{
+			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
+				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
+			colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
+			colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
+		}
+	}
+	else
+	{
+		// 通常時の線分に戻す
+		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
+		{
+			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
+				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
+			colLine->SetLocalPosStart(COL_LINE_START_LOCAL_POS);
+			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
+		}
+	}
+
 }
 
 void Player::UpdateProcessPost(void)
 {
-	// 移動操作
-	ProcessMove();
-
-	// 移動処理
-	transform_.pos = VAdd(transform_.pos, movePow_);
+	
 }
 
 void Player::ProcessMove(void)
@@ -71,7 +101,12 @@ void Player::ProcessMove(void)
 	InputManager& input = InputManager::GetInstance();
 
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
-	float speed = SPEED_MOVE;
+
+	// ダッシュ処理
+	isDash_ = (input.KeyIsNew(KEY_INPUT_LSHIFT) && GetJoypadNum() <= 0
+			   || input.PadIsBtnNew(1, static_cast<int>(InputManager::PAD_BTN::R_TRIGGER))
+			      && GetJoypadNum() > 0);
+
 
 	if (GetJoypadNum() > 0)
 	{
@@ -87,36 +122,70 @@ void Player::ProcessMove(void)
 
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		movePow_ = AsoUtility::VECTOR_ZERO;
+		//movePow_ = AsoUtility::VECTOR_ZERO;
+
+		// ダッシュ入力時にダッシュ加速度にする
+		moveSpeed_ = ((isDash_) ? SPEED_DASH : SPEED_MOVE);
+
+		if (!isJump_)
+		{
+			if (isDash_)
+			{
+				PlayAnim(ANIM_TYPE::FAST_RUN);
+			}
+			else
+			{
+				PlayAnim(ANIM_TYPE::RUN);
+			}
+		}
 
 		// カメラの方向で進行
-		VECTOR cameraAngle = SceneManager::GetInstance().GetCamera()->GetAngles();
-		cameraAngle.y = AsoUtility::Deg2RadF(cameraAngle.y);
-		MATRIX cameraMat = MatrixUtility::GetMatrixRotateXYZ(cameraAngle);
+		Quaternion cameraRot = sceneMng_.GetCamera()->GetQuaRotY();
 
 		// 移動方向を取得
-		moveDir_ = VTransform(dir, cameraMat);
-
-
-		// ダッシュ処理
-		if (input.KeyIsNew(KEY_INPUT_LSHIFT) && GetJoypadNum() <= 0 ||
-			input.PadIsBtnNew(1,static_cast<int>(InputManager::PAD_BTN::R_TRIGGER)) && GetJoypadNum() > 0)
-		{
-			speed = SPEED_DASH;
-			PlayAnim(ANIM_TYPE::FAST_RUN);
-		}
-		else
-		{
-			PlayAnim(ANIM_TYPE::RUN);
-		}
+		moveDir_ = Quaternion::PosAxis(cameraRot, dir);
 
 		// 加速度に割り当て
-		movePow_ = VScale(moveDir_, speed);
+		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
 	else
 	{
 		movePow_ = AsoUtility::VECTOR_ZERO;
 
-		PlayAnim(ANIM_TYPE::IDLE);
+		if (!isJump_)
+		{
+			PlayAnim(ANIM_TYPE::IDLE);
+		}
 	}
+}
+
+void Player::ProcessJump(void)
+{
+	auto& input = InputManager::GetInstance();
+
+	bool isHitKey = input.KeyIsTrgDown(KEY_INPUT_SPACE)
+		|| input.PadIsBtnTrgDown(InputManager::PAD_NO::PAD1, 
+								 InputManager::PAD_BTN::DOWN);
+	// ジャンプ
+	if (isHitKey && !isJump_)
+	{
+		// ジャンプ量の計算
+		float jumpSpeed = (POW_JUMP * sceneMng_.GetDeltaTime());
+		jumpPow_ = VScale(AsoUtility::DIR_UP, jumpSpeed);
+
+		isJump_ = true;
+
+		// アニメーション再生
+		PlayAnim(ANIM_TYPE::JUMP, false);
+	}
+}
+
+void Player::PlayAnim(Player::ANIM_TYPE _type, bool _isLoop)
+{
+	int type = static_cast<int>(_type);
+
+	// 指定したアニメーションが割り当てられているとき、処理終了
+	if (type == animation_->GetPlayType()) { return; }
+
+	animation_->Play(type, _isLoop);
 }
