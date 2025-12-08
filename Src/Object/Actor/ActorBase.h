@@ -78,5 +78,9 @@ protected:
 	// ‰Šú‰»Œã‚ÌŒÂ•Êˆ—
 	virtual void InitPost(void) = 0;
 
+	// ‘O•`‰æ
+	virtual void DrawPre(void) {};
 
+	// Œã•`‰æ
+	virtual void DrawLate(void) {};
 };

@@ -36,10 +36,17 @@ void ActorBase::Init(void)
 
 void ActorBase::Draw(void)
 {
+	// 前描画
+	DrawPre();
+
 	if (transform_.modelId != -1)
 	{
 		MV1DrawModel(transform_.modelId);
 	}
+
+	// 後描画
+	DrawLate();
+
 #ifdef _DEBUG
 	// 所有しているコライダの描画
 	for (const auto& [type, collider] : ownColliders_)

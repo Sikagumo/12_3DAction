@@ -37,6 +37,14 @@ void Stage::InitCollider(void)
 
 	// モデルのコライダ割り当て
 	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::STAGE, &transform_);
+	for (const std::string& name : EXCLUDE_FRAME_NAMES)
+	{
+		colModel->AddExcludeFrameIds(name);
+	}
+	for (const std::string& name : TARGET_FRAME_NAMES)
+	{
+		colModel->AddTargetFrameIds(name);
+	}
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
 }
 

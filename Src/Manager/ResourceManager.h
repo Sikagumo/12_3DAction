@@ -12,19 +12,22 @@ public:
 	// リソース名
 	enum class SRC
 	{
+		// 画像
 		IMG_TITLE,
 		IMG_SHADOW,
 		IMG_PUSH_SPACE,
+		IMG_CONGRATULATIONS,
 
+		// モデル
 		MODEL_PLAYER,
 		MODEL_RAT,
 		MODEL_GOAL_STER,
 		MODEL_PLANET_PITFALL,
 		MODEL_PLANET_SPHERE,
-
 		MODEL_STAGE_MAIN,
 		MODEL_SKYDOME,
 
+		// 外部アニメーション
 		ANIM_PLAYER_IDLE,
 		ANIM_PLAYER_RUN,
 		ANIM_PLAYER_RUN_FAST,
@@ -38,7 +41,6 @@ public:
 		ANIM_PLAYER_SHOT,
 		ANIM_PLAYER_VICTORY,
 		ANIM_PLAYER_WARP,
-
 	};
 
 	// 明示的にインステンスを生成する

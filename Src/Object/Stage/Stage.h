@@ -1,5 +1,7 @@
 #pragma once
 #include "../Actor/ActorBase.h"
+#include <string>
+#include <vector>
 
 class Stage : public ActorBase
 {
@@ -31,4 +33,17 @@ protected:
 	void InitAnimation(void)override;
 
 	void InitPost(void)override;
+
+
+private:
+
+	// 除外フレーム名称
+	const std::vector<std::string> EXCLUDE_FRAME_NAMES = {
+		"Mush", "Grass",
+	};
+
+	// 対象フレーム
+	const std::vector<std::string> TARGET_FRAME_NAMES = {
+		"Ground",
+	};
 };

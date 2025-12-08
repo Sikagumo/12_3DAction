@@ -66,8 +66,8 @@ void TitleScene::Update(void)
 	{
 		sceneMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 	}
-
-	spherePlant_.Rotate(AsoUtility::AXIS_Z, 1.0f);
+	
+	spherePlant_.Rotate(AsoUtility::AXIS_Y, -1.0f);
 	playerAnim_->Update();
 
 	skyDome_->Update();

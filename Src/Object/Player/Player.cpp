@@ -7,14 +7,17 @@
 #include "../../Manager/SceneManager.h"
 #include "../../Manager/Camera.h"
 #include "../Collider/ColliderLine.h"
+#include "../Collider/ColliderCapsule.h"
 
 
 Player::Player(void)
-	:CharaBase::CharaBase()
+	:CharaBase::CharaBase(),
+	moveSpeed_(0.0f),
+	isDash_(false)
 {
 }
 
-void Player::InitLoad(void)
+void Player::InitLoadPost(void)
 {
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::MODEL_PLAYER));
 }
@@ -31,6 +34,14 @@ void Player::InitCollider(void)
 	// 主に地面との衝突で仕様する線分コライダ
 	ColliderLine* colLine = new ColliderLine(ColliderBase::TAG::PLAYER, &transform_,
 											 COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
+
+	// 主に壁や木などの衝突で仕様するカプセルコライダ
+	ColliderCapsule* colCapsule = new ColliderCapsule(ColliderBase::TAG::PLAYER, &transform_,
+													  COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
+													  COL_CAPSULE_RADIUS);
+
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
 
 	// 当たり判定リストに格納
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
@@ -64,8 +75,17 @@ void Player::UpdateProcess(void)
 
 	// 移動操作
 	ProcessMove();
+}
 
-	// アニメーションごとの線分調整
+void Player::UpdateProcessPost(void)
+{
+	
+}
+
+void Player::CollisionReserve(void)
+{
+	/* アニメーションごとの衝突位置調整 */
+
 	if (animation_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
 	{
 		// ジャンプ中は線分を伸ばす
@@ -75,6 +95,15 @@ void Player::UpdateProcess(void)
 				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
 			colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
 			colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
+		}
+
+		// ジャンプ中はカプセルを伸ばす
+		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
+		{
+			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
+				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
+			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_JUMP_LOCAL_POS);
+			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_JUMP_LOCAL_POS);
 		}
 	}
 	else
@@ -87,13 +116,16 @@ void Player::UpdateProcess(void)
 			colLine->SetLocalPosStart(COL_LINE_START_LOCAL_POS);
 			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
 		}
+
+		// 通常時のカプセルに戻す
+		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
+		{
+			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
+				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
+			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_LOCAL_POS);
+			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_LOCAL_POS);
+		}
 	}
-
-}
-
-void Player::UpdateProcessPost(void)
-{
-	
 }
 
 void Player::ProcessMove(void)
@@ -163,6 +195,25 @@ void Player::ProcessJump(void)
 {
 	auto& input = InputManager::GetInstance();
 
+	bool isHitKeyNew = input.KeyIsNew(KEY_INPUT_SPACE)
+		|| input.PadIsBtnNew(InputManager::PAD_NO::PAD1, 
+								 InputManager::PAD_BTN::DOWN);
+	if (isHitKeyNew)
+	{
+		// ジャンプの入力受付時間を減少
+		stepJump_ += sceneMng_.GetDeltaTime();
+		if (stepJump_ <= TIME_JUMP_INPUT)
+		{
+			// ジャンプ量の計算
+			float jumpSpeed = POW_JUMP_KEEP * sceneMng_.GetDeltaTime();
+			jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_UP, jumpSpeed));
+		}
+	}
+	else
+	{
+		stepJump_ = 0.0f;
+	}
+
 	bool isHitKey = input.KeyIsTrgDown(KEY_INPUT_SPACE)
 		|| input.PadIsBtnTrgDown(InputManager::PAD_NO::PAD1, 
 								 InputManager::PAD_BTN::DOWN);
@@ -170,7 +221,7 @@ void Player::ProcessJump(void)
 	if (isHitKey && !isJump_)
 	{
 		// ジャンプ量の計算
-		float jumpSpeed = (POW_JUMP * sceneMng_.GetDeltaTime());
+		float jumpSpeed = (POW_JUMP_INIT * sceneMng_.GetDeltaTime());
 		jumpPow_ = VScale(AsoUtility::DIR_UP, jumpSpeed);
 
 		isJump_ = true;

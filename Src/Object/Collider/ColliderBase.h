@@ -22,6 +22,7 @@ public:
 	{
 		STAGE,
 		PLAYER,
+		CAMERA,
 	};
 
 

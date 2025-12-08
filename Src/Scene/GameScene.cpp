@@ -11,8 +11,10 @@
 
 
 GameScene::GameScene(void)
-	:
-	SceneBase()
+	: stage_(nullptr),
+	  skyDome_(nullptr),
+	  player_(nullptr),
+	  SceneBase()
 {
 }
 
@@ -38,6 +40,7 @@ void GameScene::Init(void)
 	// ステージモデルのコライダーをプレイヤーに登録
 	const ColliderBase* stageCollider = stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
+	camera->AddHitCollider(stageCollider);
 }
 
 void GameScene::Update(void)

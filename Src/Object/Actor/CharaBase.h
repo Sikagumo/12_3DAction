@@ -10,6 +10,7 @@ public:
 	enum class COLLIDER_TYPE
 	{
 		LINE,
+		CAPSULE,
 		MAX,
 	};
 
@@ -28,8 +29,17 @@ protected:
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -30.0f;
 
+	// 衝突時の押し戻し試行回数
+	static constexpr int CNT_TRY_COLLISION = 20;
+
+	// 衝突時の押し戻し量
+	static constexpr float COLLISION_BACK_DIS = 1.0f;
+
 
 	AnimationController* animation_;
+
+	int shadowHandle_;
+
 
 	VECTOR moveDir_;
 
@@ -40,11 +50,15 @@ protected:
 	// 移動前の座標
 	VECTOR prevPos_;
 
+	// ジャンプの入力受付時間
+	float stepJump_;
+
 	// ジャンプ判定
 	bool isJump_;
 
 	
-
+	void InitLoad(void)override final;
+	virtual void InitLoadPost(void) = 0;
 	virtual void InitAnimation(void)override;
 
 	virtual void UpdateProcess(void) = 0;
@@ -58,4 +72,12 @@ protected:
 	// 衝突判定
 	void Collision(void);
 	void CollisionGravity(void);
+	void CollisionCapsule(void);
+	virtual void CollisionReserve(void) {};
+
+	
+	void DrawLate(void)override;
+
+	// 影描画
+	void DrawShadowRound(void);
 };

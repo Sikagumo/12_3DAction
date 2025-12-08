@@ -1,9 +1,10 @@
 #pragma once
 #include <DxLib.h>
 #include "../Common/Quaternion.h"
+#include "../Object/Actor/ActorBase.h"
 class Transform;
 
-class Camera
+class Camera : public ActorBase
 {
 
 public:
@@ -17,8 +18,8 @@ public:
 	};
 
 	// カメラの回転量
-	const float ROT_POW_DEG = 10.0f;
-	const float ROT_POW_RAD = ROT_POW_DEG * DX_PI_F / 180.0f;
+	const float ROT_POW_DEG = 25.0f;
+	const float ROT_POW_RAD = ROT_POW_DEG * (DX_PI_F / 180.0f);
 
 	// カメラの移動スピード
 	static constexpr float SPEED = 20.0f;
@@ -46,17 +47,22 @@ public:
 		FOLLOW,
 	};
 
+	// 衝突判定種別
+	enum class COLLIDER_TYPE
+	{
+		SPHERE,
+		MAX,
+	};
+
+
 	// コンストラクタ
 	Camera(void);
 
 	// デストラクタ
-	~Camera(void);
-
-	// 初期化
-	void Init(void);
+	~Camera(void)override = default;
 
 	// 更新
-	void Update(void);
+	void Update(void)override;
 
 	// 描画前のカメラ設定
 	void SetBeforeDraw(void);
@@ -65,20 +71,20 @@ public:
 	void DrawDebug(void);
 
 	// 解放
-	void Release(void);
+	void Release(void)override;
 
 	// 座標の取得
 	const VECTOR& GetPos(void) const;
 
 	// 角度の取得
-	const VECTOR& GetAngles(void) const;
+	const VECTOR& GetAngles(void) const { return angles_;  };
 	const Quaternion& GetQuaRot(void) const;
 	
 	// X回転を抜いたY軸のみのカメラ角度
 	const Quaternion& GetQuaRotY(void) const;
 	
 	// 注視点の取得
-	const VECTOR& GetTargetPos(void) const;
+	const VECTOR& GetTargetPos(void) const { return targetPos_;  };
 
 	// カメラの前方方向
 	VECTOR GetForward(void) const;
@@ -89,7 +95,41 @@ public:
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
 
+
+protected:
+
+	// リソースロード
+	void InitLoad(void) override {}
+
+	// 大きさ、回転、座標の初期化
+	void InitTransform(void) override {}
+
+	// 衝突判定の初期化
+	void InitCollider(void) override;
+
+	// アニメーションの初期化
+	void InitAnimation(void) override {}
+
+	// 初期化後の個別処理
+	void InitPost(void) override;
+
 private:
+
+	// 衝突時の押し戻し試行回数
+	static constexpr int CNT_TRY_COLLISION_CAMERA = 30;
+
+	// 衝突時の押し戻し量
+	static constexpr float COLLISION_BACK_DIS = 2.0f;
+
+	// 衝突判定用球体半径
+	static constexpr float COL_CAPSULE_SPHERE = 50.0f;
+
+	// カメラの補間移動率
+	static constexpr float LERP_RATE_MOVE = 0.1f;
+
+
+	// カメラの更新前位置
+	VECTOR prePos_;
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;
@@ -97,23 +137,14 @@ private:
 	// カメラモード
 	MODE mode_;
 
-	// カメラの位置
-	VECTOR pos_;
-
 	// カメラ角度(rad)
 	VECTOR angles_;
 
 	// カメラ角度(Y軸のみ)
 	Quaternion rotY_;
 
-	// カメラ角度
-	Quaternion rot_;
-
 	// 注視点
 	VECTOR targetPos_;
-
-	// カメラの上方向
-	VECTOR cameraUp_;
 	
 	// カメラを初期位置に戻す
 	void SetDefault(void);
@@ -135,5 +166,8 @@ private:
 	void SetBeforeDrawFixedPoint(void);
 	void SetBeforeDrawFree(void);
 	void SetBeforeDrawFollow(void);
+
+	// 衝突判定
+	void Collision(void);
 
 };

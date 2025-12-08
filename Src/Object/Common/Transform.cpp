@@ -81,7 +81,7 @@ void Transform::InitTransform(void)
 
 void Transform::Rotate(const Quaternion& rot)
 {
-	quaRot = Quaternion::Mult(quaRot,rot);
+	quaRot = Quaternion::Mult(quaRot, rot);
 	Update();
 }
 void Transform::Rotate(const VECTOR& _axis, float _pow)
