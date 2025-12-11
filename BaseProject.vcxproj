@@ -39,6 +39,9 @@
     <ClCompile Include="Src\Object\Collider\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyRat.cpp" />
     <ClCompile Include="Src\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
@@ -69,6 +72,9 @@
     <ClInclude Include="Src\Object\Collider\ColliderSphere.h" />
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyRat.h" />
     <ClInclude Include="Src\Object\Player\Player.h" />
     <ClInclude Include="Src\Object\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Object\Stage\Stage.h" />

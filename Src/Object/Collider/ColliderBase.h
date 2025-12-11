@@ -23,6 +23,7 @@ public:
 		STAGE,
 		PLAYER,
 		CAMERA,
+		ENEMY,
 	};
 
 

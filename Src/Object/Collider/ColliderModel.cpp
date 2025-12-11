@@ -77,4 +77,53 @@ bool ColliderModel::IsTargetFrame(int _frameIdx) const
 		return true;
 	}
 	return false;
+}
+
+MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(const VECTOR& start, const VECTOR& end, bool isExclude, bool isTarget) const
+{
+	// 線分で衝突判定
+	auto hits = MV1CollCheck_LineDim(
+		follow_->modelId,
+		-1,
+		start,
+		end
+	);
+
+	// 追従対象に一番近い衝突点を探す
+	bool isCollision = false;
+	MV1_COLL_RESULT_POLY hitPoly;
+	double minDist = DBL_MAX;
+
+	for (int i = 0; i < hits.HitNum; i++)
+	{
+		const auto& hit = hits.Dim[i];
+
+		if (isExclude)
+		{
+			// 除外フレームは無視する
+			if (IsExcludeFrame(hit.FrameIndex)) { continue; }
+
+			// 対象フレームは無視する
+			if (!IsTargetFrame(hit.FrameIndex)) { continue; }
+		}
+
+
+		// 衝突判定
+		isCollision = true;
+
+		// 距離判定
+		float dist = VSize(VSub(hit.HitPosition, start));
+
+		if (minDist > dist/* && minDist > VIEW_NEAR*/)
+		{
+			// 追従対象に一番近い衝突点を優先
+			minDist = dist;
+			hitPoly = hit;
+		}
+	}
+
+	// 検出した地面ポリゴン情報の後始末
+	MV1CollResultPolyDimTerminate(hits);
+	
+	return hitPoly;
 }

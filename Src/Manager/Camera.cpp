@@ -352,6 +352,8 @@ void Camera::Collision(void)
 		if (colliderModel == nullptr) continue;
 
 		// 線分で衝突判定
+		//auto hitPoly = colliderModel->GetNearestHitPolyLine(transform_.pos, start, true);
+		
 		auto hits = MV1CollCheck_LineDim(
 			colliderModel->GetFollow()->modelId,
 			-1,
@@ -375,6 +377,7 @@ void Camera::Collision(void)
 			// 対象フレームは無視する
 			if (!colliderModel->IsTargetFrame(hit.FrameIndex)) { continue; }
 
+
 			// 衝突判定
 			isCollision = true;
 
@@ -393,6 +396,7 @@ void Camera::Collision(void)
 		MV1CollResultPolyDimTerminate(hits);
 
 		if (!isCollision)
+		//if (hitPoly.HitFlag == 0)
 		{
 			// 衝突していなければ次のコライダへ
 			return;
@@ -415,20 +419,9 @@ void Camera::Collision(void)
 		ColliderSphere* colliderSphere =
 			dynamic_cast<ColliderSphere*>(ownColliders_.at(typeSphere));
 
-		if (colliderSphere == nullptr) return;
+		if (colliderSphere == nullptr) { return; }
 
-		// 衝突補正処理
-		int sphereCnt = 0;
-
-		while (sphereCnt < CNT_TRY_COLLISION_CAMERA)
-		{
-			// 球体と三角形の当たり判定
-			if (!HitCheck_Sphere_Triangle(colliderSphere->GetPos(), colliderSphere->GetRadius(),
-						hitPoly.Position[0],hitPoly.Position[1],hitPoly.Position[2])) break;
-			
-			// 衝突していたら法線方向に押し戻し
-			transform_.pos = VAdd(transform_.pos, hitPoly.Normal);
-			sphereCnt++;
-		}
+		// 反発処理
+		transform_.pos = colliderSphere->GetPosPushBackAlongNormal(hitPoly, CNT_TRY_COLLISION_CAMERA, COLLISION_BACK_DIS);
 	}
 }

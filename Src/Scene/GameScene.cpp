@@ -6,6 +6,7 @@
 #include "../Object/Stage/Stage.h"
 #include "../Object/SkyDome/SkyDome.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Enemy/EnemyManager.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Manager/Camera.h"
 
@@ -14,6 +15,7 @@ GameScene::GameScene(void)
 	: stage_(nullptr),
 	  skyDome_(nullptr),
 	  player_(nullptr),
+	  enemies_(nullptr),
 	  SceneBase()
 {
 }
@@ -30,6 +32,9 @@ void GameScene::Init(void)
 	player_ = new Player();
 	player_->Init();
 
+	enemies_ = new EnemyManager();
+	enemies_->Init();
+
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
 
@@ -41,6 +46,7 @@ void GameScene::Init(void)
 	const ColliderBase* stageCollider = stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
 	camera->AddHitCollider(stageCollider);
+	enemies_->AddHitCollider(stageCollider);
 }
 
 void GameScene::Update(void)
@@ -58,6 +64,8 @@ void GameScene::Update(void)
 
 	player_->Update();
 
+	enemies_->Update();
+
 	Camera* camera = sceneMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->Update();
@@ -70,6 +78,8 @@ void GameScene::Draw(void)
 	stage_->Draw();
 
 	player_->Draw();
+
+	enemies_->Draw();
 }
 
 void GameScene::Release(void)
@@ -79,6 +89,9 @@ void GameScene::Release(void)
 
 	stage_->Release();
 	delete stage_;
+
+	enemies_->Release();
+	delete enemies_;
 
 	player_->Release();
 	delete player_;

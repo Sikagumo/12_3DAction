@@ -47,9 +47,8 @@ void Player::InitCollider(void)
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 }
 
-void Player::InitAnimation(void)
+void Player::InitAnimationPost(void)
 {
-	CharaBase::InitAnimation();
 	animation_->AddExternal(static_cast<int>(ANIM_TYPE::IDLE), 30.0f,
 					   resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_IDLE));
 

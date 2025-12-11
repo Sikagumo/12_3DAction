@@ -30,7 +30,7 @@ protected:
 	void InitCollider(void)override;
 
 	// アニメーションの初期化
-	void InitAnimation(void)override;
+	void InitAnimationPost(void)override;
 
 	// 初期化後の個別処理
 	void InitPost(void)override;

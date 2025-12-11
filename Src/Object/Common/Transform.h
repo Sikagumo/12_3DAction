@@ -85,4 +85,5 @@ public:
 	// ‘ÎÛ•ûŒü‚ğæ“¾
 	VECTOR GetDir(const VECTOR& dir) const;
 
+	void GetScale(float _scale) { scl = VGet(_scale, _scale, _scale); };
 };

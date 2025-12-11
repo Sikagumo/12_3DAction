@@ -37,7 +37,7 @@ public:
 	/// @brief 同じモデル内のアニメーションを準備
 	/// @param type アニメーション種類
 	/// @param speed アニメーション速度 
-	void AddInternal(int _type, float _speed);
+	void AddInternal(int _type, float _speed = 30.0f);
 
 	/// @brief 別のアニメーションモデルから準備
 	/// @param _type アニメーション種類

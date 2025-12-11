@@ -57,6 +57,9 @@ void ResourceManager::SetResourceModel(void)
 	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Stage/MainStage/MainStage.mv1");
 	resourcesMap_.emplace(SRC::MODEL_STAGE_MAIN, res);
 
+	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
+	resourcesMap_.emplace(SRC::MODEL_RAT, res);
+
 	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Player/Player.mv1");
 	resourcesMap_.emplace(SRC::MODEL_PLAYER, res);
 

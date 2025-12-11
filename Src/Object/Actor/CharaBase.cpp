@@ -39,6 +39,9 @@ void CharaBase::InitAnimation(void)
 	{
 		animation_ = new AnimationController(transform_.modelId);
 	}
+
+	// 各アニメーション初期化
+	InitAnimationPost();
 }
 
 void CharaBase::Update(void)
@@ -221,6 +224,11 @@ void CharaBase::CollisionCapsule(void)
 			// 衝突したフレームが除外対象時、スキップ
 			if (colliderModel->IsExcludeFrame(hit.FrameIndex)) { continue; }
 
+
+			// 指定された回数と距離で三角形の法線方向に押し戻す
+			transform_.pos = colliderCapsule->GetPosPushBackAlongNormal(hit, CNT_TRY_COLLISION, COLLISION_BACK_DIS);
+
+			/*
 			// 地面と異なり、衝突回避位置が不明なため、何度か移動させる
 			// この時、移動させる方向は、移動前座標に向いた方向であったり、
 			// 衝突したポリゴンの法線方向だったりする
@@ -240,7 +248,7 @@ void CharaBase::CollisionCapsule(void)
 					continue;
 				}
 				break;
-			}
+			}*/
 		}
 
 		// 検出した地面ポリゴン情報の後始末

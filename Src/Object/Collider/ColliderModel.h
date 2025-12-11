@@ -32,6 +32,11 @@ public:
 	// 対象フレーム判定
 	bool IsTargetFrame(int _frameIdx) const;
 
+	// 線分とモデルの最近接(startに近い)衝突ポリゴンを取得
+	MV1_COLL_RESULT_POLY GetNearestHitPolyLine(
+		const VECTOR& start,
+		const VECTOR& end,
+		bool isExclude = false, bool isTarget = false) const;
 
 protected:
 

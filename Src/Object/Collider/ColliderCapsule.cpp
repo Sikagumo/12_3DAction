@@ -69,3 +69,31 @@ void ColliderCapsule::DrawDebug(int color)
 	// カプセルの中心
 	DrawSphere3D(GetCenter(), radius_, 10, color, color, true);
 }
+
+VECTOR ColliderCapsule::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hitColPoly,
+												  int maxTryCnt, float pushDistance) const
+{
+	// コピー生成
+	Transform tempTransform = *follow_;
+	ColliderCapsule tmpCapsule = *this;
+	tmpCapsule.SetFollow(&tempTransform);
+
+	// 衝突補正処理
+	int tryCnt = 0;
+	while (tryCnt < maxTryCnt)
+	{
+		// カプセルと三角形の当たり判定
+		if (!HitCheck_Capsule_Triangle(
+			tmpCapsule.GetPosTop(), tmpCapsule.GetPosDown(),
+			tmpCapsule.GetRadius(),
+			hitColPoly.Position[0], hitColPoly.Position[1],
+			hitColPoly.Position[2]))
+		{
+			break;
+		}
+		// 衝突していたら法線方向に押し戻し
+		tempTransform.pos = VAdd(tempTransform.pos, VScale(hitColPoly.Normal, pushDistance));
+		tryCnt++;
+	}
+	return tempTransform.pos;
+}
