@@ -60,6 +60,14 @@ void ResourceManager::SetResourceModel(void)
 	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
 	resourcesMap_.emplace(SRC::MODEL_RAT, res);
 
+	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Enemy/Robot/Robot.mv1");
+	resourcesMap_.emplace(SRC::MODEL_ROBOT, res);
+
+	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
+	resourcesMap_.emplace(SRC::MODEL_VIEW_RANGE, res);
+
+
+
 	res = new Resource(RES_TYPE::MODEL, PATH_MDL + "Player/Player.mv1");
 	resourcesMap_.emplace(SRC::MODEL_PLAYER, res);
 

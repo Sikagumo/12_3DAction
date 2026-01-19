@@ -42,7 +42,8 @@ public:
 		const MV1_COLL_RESULT_POLY& hitColPoly,
 		int maxTryCnt,
 		float pushDistance) const;
-
+	
+	//bool IsHit(const ColliderModel* colliderModel, bool isExcude);
 
 protected:
 

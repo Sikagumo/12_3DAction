@@ -10,11 +10,12 @@ Transform::Transform(void)
 	rot(AsoUtility::VECTOR_ZERO),
 	pos(AsoUtility::VECTOR_ZERO),
 	localPos(AsoUtility::VECTOR_ZERO),
+	prePos(AsoUtility::VECTOR_ZERO),
 	matScl(MGetIdent()),
 	matRot(MGetIdent()),
 	matPos(MGetIdent()),
-	quaRot(Quaternion()),
-	quaRotLocal(Quaternion())
+	quaRot(Quaternion().Identity()),
+	quaRotLocal(Quaternion().Identity())
 
 {
 }
@@ -50,6 +51,39 @@ void Transform::Update(void)
 
 }
 
+void Transform::DrawModelDir(void)
+{
+#ifdef _DEBUG
+	const float DRAW_OFFSET = 65.0f;
+	const float DRAW_OFFSET_LOCAL = 25.0f;
+	const float DRAW_RADIUS = 10.0f;
+	const float DRAW_RADIUS_LOCAL = 15.0f;
+	const float DRAW_DIM = 10;
+	const unsigned int SPEC_COLOR = 0xaaaaaa;
+	VECTOR drawPos;
+	VECTOR drawPosLocal;
+	unsigned int drawColor;
+
+	// Xé≤
+	drawPos = VAdd(pos, VScale(GetRight(), DRAW_OFFSET));
+	drawColor = 0xaa0000;
+	DrawSphere3D(drawPos, DRAW_RADIUS, DRAW_DIM, drawColor, SPEC_COLOR, true);
+	DrawLine3D(pos, drawPos, drawColor);
+
+	// Yé≤
+	drawPos = VAdd(pos, VScale(GetUp(), DRAW_OFFSET));
+	drawColor = 0x00aa00;
+	DrawSphere3D(drawPos, DRAW_RADIUS, DRAW_DIM, drawColor, SPEC_COLOR, true);
+	DrawLine3D(pos, drawPos, drawColor);
+
+	// Zé≤
+	drawPos = VAdd(pos, VScale(GetForward(), DRAW_OFFSET));
+	drawColor = 0x0000aa;
+	DrawSphere3D(drawPos, DRAW_RADIUS, DRAW_DIM, drawColor, SPEC_COLOR, true);
+	DrawLine3D(pos, drawPos, drawColor);
+#endif
+}
+
 void Transform::Release(void)
 {
 }
@@ -72,11 +106,34 @@ void Transform::InitTransform(float _scl, const Quaternion& _rot, const Quaterni
 {
 	InitTransform({ _scl,_scl,_scl }, _rot, _rotLocal, _pos);
 }
+void Transform::InitTransform(float _scl, const Quaternion& _rot, const Quaternion& _rotLocal)
+{
+	scl = VGet(_scl, _scl, _scl);
+	quaRot = _rot;
+	quaRotLocal = _rotLocal;
+
+	Update();
+}
 void Transform::InitTransform(void)
 {
 	InitTransform(AsoUtility::VECTOR_ONE,
 				  Quaternion::Identity(), Quaternion::Identity(),
 				  AsoUtility::VECTOR_ZERO);
+}
+
+
+void Transform::Translate(const VECTOR& _movePow)
+{
+	pos = VAdd(pos, _movePow);
+	Update();
+}
+
+void Transform::Translate(const VECTOR& _dir, float _movePow)
+{
+	// ê≥ãKâªÇµÇƒà⁄ìÆ
+	VECTOR dir = AsoUtility::VNormalize(_dir);
+	VECTOR moveVec = VScale(dir, _movePow);
+	Translate(moveVec);
 }
 
 void Transform::Rotate(const Quaternion& rot)

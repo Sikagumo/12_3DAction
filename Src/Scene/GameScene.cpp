@@ -15,7 +15,7 @@ GameScene::GameScene(void)
 	: stage_(nullptr),
 	  skyDome_(nullptr),
 	  player_(nullptr),
-	  enemies_(nullptr),
+	  enemyMng_(nullptr),
 	  SceneBase()
 {
 }
@@ -28,12 +28,19 @@ void GameScene::Init(void)
 {
 	stage_ = new Stage();
 	stage_->Init();
+	const ColliderBase* stageCollider = stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 
 	player_ = new Player();
 	player_->Init();
 
-	enemies_ = new EnemyManager();
-	enemies_->Init();
+	// ステージモデルのコライダーをプレイヤーに登録
+	player_->AddHitCollider(stageCollider);
+
+
+	enemyMng_ = new EnemyManager(player_);
+	enemyMng_->Init();
+	enemyMng_->AddHitCollider(stageCollider);
+	enemyMng_->AddHitCollider(player_->GetOwnCollider(static_cast<int>(CharaBase::COLLIDER_TYPE::CAPSULE)));
 
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
@@ -41,12 +48,7 @@ void GameScene::Init(void)
 	Camera* camera = sceneMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->Init();
-
-	// ステージモデルのコライダーをプレイヤーに登録
-	const ColliderBase* stageCollider = stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
-	player_->AddHitCollider(stageCollider);
 	camera->AddHitCollider(stageCollider);
-	enemies_->AddHitCollider(stageCollider);
 }
 
 void GameScene::Update(void)
@@ -64,7 +66,7 @@ void GameScene::Update(void)
 
 	player_->Update();
 
-	enemies_->Update();
+	enemyMng_->Update();
 
 	Camera* camera = sceneMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
@@ -79,7 +81,7 @@ void GameScene::Draw(void)
 
 	player_->Draw();
 
-	enemies_->Draw();
+	enemyMng_->Draw();
 }
 
 void GameScene::Release(void)
@@ -90,8 +92,8 @@ void GameScene::Release(void)
 	stage_->Release();
 	delete stage_;
 
-	enemies_->Release();
-	delete enemies_;
+	enemyMng_->Release();
+	delete enemyMng_;
 
 	player_->Release();
 	delete player_;

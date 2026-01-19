@@ -1,21 +1,25 @@
 #pragma once
 #include <DxLib.h>
-#include "./EnemyBase.h"
+#include "../EnemyBase.h"
 
 class EnemyRat : public EnemyBase
 {
 
 public:
 
-	// アニメーション種別
-	enum class ANIM_TYPE
+	// 状態
+	enum class STATE
 	{
-		NONE = 0,
-		IDLE = 8,
+		NONE,
+		THINK,
+		IDLE,
+		WANDER,
+		END
 	};
 
+
 	// コンストラクタ
-	EnemyRat(const EnemyBase::EnemyData& data);
+	EnemyRat(const EnemyBase::EnemyData& data, Player& _player);
 
 	// デストラクタ
 	~EnemyRat(void) override = default;
@@ -65,4 +69,27 @@ private:
 
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
+
+
+	// 状態
+	STATE state_;
+
+	// 更新ステップ
+	float step_;
+
+
+	// 状態遷移
+	void ChangeState(STATE state);
+	void ChangeStateNone(void);
+	void ChangeStateThink(void);
+	void ChangeStateIdle(void);
+	void ChangeStateWander(void);
+	void ChangeStateEnd(void);
+	// 更新系
+	void UpdateNone(void);
+	void UpdateThink(void);
+	void UpdateIdle(void);
+	void UpdateWander(void);
+	void UpdateEnd(void);
+
 };

@@ -11,6 +11,7 @@ public:
 	{
 		LINE,
 		CAPSULE,
+		VIEW_RANGE,
 		MAX,
 	};
 
@@ -40,6 +41,7 @@ protected:
 
 	int shadowHandle_;
 
+	float moveSpeed_;
 
 	VECTOR moveDir_;
 
@@ -64,6 +66,8 @@ protected:
 
 	virtual void UpdateProcess(void) = 0;
 	virtual void UpdateProcessPost(void) = 0;
+
+	virtual void DrawPre(void)override;
 
 	// ˆÚ“®•ûŒü‚É‰ž‚¶‚½’x‰„‰ñ“]
 	void DelayRotate(void);

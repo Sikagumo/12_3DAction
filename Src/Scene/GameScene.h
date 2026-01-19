@@ -33,6 +33,6 @@ private:
 	Stage* stage_;
 	SkyDome* skyDome_;
 	Player* player_;
-	EnemyManager* enemies_;
+	EnemyManager* enemyMng_;
 
 };

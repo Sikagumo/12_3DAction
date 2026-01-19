@@ -214,6 +214,13 @@ void InputManager::AddMouse(unsigned int type)
 	mouses_.emplace(mouse.type, mouse);
 }
 
+Vector2 InputManager::GetMousePos(void) const
+{
+	Vector2 point = {};
+	GetMousePoint(&point.x, &point.y);
+	return point;
+}
+
 const InputManager::Mouse& InputManager::FindMouse(unsigned int _mouseType) const
 {
 	auto it = mouses_.find(_mouseType);

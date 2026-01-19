@@ -359,6 +359,12 @@ void CharaBase::DrawShadowRound(void)
 	SetUseZBuffer3D(FALSE);
 }
 
+void CharaBase::DrawPre(void)
+{
+	// ƒ‚ƒfƒ‹Œü‚«•`‰æ
+	transform_.DrawModelDir();
+}
+
 void CharaBase::DelayRotate(void)
 {
 	// ˆÚ“®•ûŒü‚©‚ç‰ñ“]‚É•ÏŠ·‚·‚é

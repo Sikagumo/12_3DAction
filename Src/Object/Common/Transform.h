@@ -23,6 +23,7 @@ public:
 	// 位置
 	VECTOR pos;
 	VECTOR localPos;
+	VECTOR prePos;
 
 	// 行列
 	MATRIX matScl;
@@ -45,6 +46,8 @@ public:
 	// モデル制御の基本情報更新
 	void Update(void);
 	
+	void DrawModelDir(void);
+
 	// 解放
 	void Release(void);
 
@@ -54,15 +57,20 @@ public:
 	/// @brief 数値初期
 	void InitTransform(const VECTOR& _scl,const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos);
 	void InitTransform(float _scl,const Quaternion& _rot, const Quaternion& _rotLocal, const VECTOR& _pos);
+	void InitTransform(float _scl,const Quaternion& _rot, const Quaternion& _rotLocal);
 	void InitTransform(void);
 
-	/// @brief 回転処理
-	void Rotate(const Quaternion& _rot);
+	/// @brief 移動処理
+	/// @param _movePow 移動量
+	void Translate(const VECTOR& _movePow);
+	void Translate(const VECTOR& _dir, float _movePow);
 
 	/// @brief 回転処理
 	/// @param _axis 回転方向
 	/// @param _pow 速度
 	void Rotate(const VECTOR& _axis, float _pow);
+	void Rotate(const Quaternion& _rot);
+
 
 	// 前方方向を取得
 	VECTOR GetForward(void) const;

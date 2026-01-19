@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
+#include "./EnemyBase.h"
 class EnemyBase;
 class ColliderBase;
 class Transform;
+class Player;
 
 class EnemyManager
 {
 public:
 	// コンストラクタ
-	EnemyManager(void);
+	EnemyManager(Player* _player);
 
 	// デストラクタ
 	~EnemyManager(void) = default;
@@ -32,11 +34,17 @@ public:
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
 
+
+	// CSVから敵情報の読取を行う
+	void LoadCsvData(void);
+
 	/// @brief 敵生成処理
-	void CreateEnemy(const Transform& _transform);
+	EnemyBase* Create(const EnemyBase::EnemyData& data);
 
 
 private:
+
+	Player& player_;
 
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
