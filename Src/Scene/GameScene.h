@@ -34,5 +34,4 @@ private:
 	SkyDome* skyDome_;
 	Player* player_;
 	EnemyManager* enemyMng_;
-
 };

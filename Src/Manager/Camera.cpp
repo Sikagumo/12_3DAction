@@ -207,8 +207,7 @@ void Camera::ProcessMove(void)
 	else
 	{
 		// 左スティックの傾き
-		moveDir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::LEFT);
-
+		moveDir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::RIGHT);
 	}
 
 	// 移動処理
@@ -221,7 +220,7 @@ void Camera::ProcessMove(void)
 		VECTOR direction = VNorm(transform_.quaRot.PosAxis(moveDir));
 
 		// 移動させたい方向に移動量をかける(=移動量)
-		VECTOR movePow = VScale(direction, SPEED);
+		VECTOR movePow = VScale(direction, ROT_SPEED);
 
 		// カメラ位置も注視点も移動させる
 		transform_.pos = VAdd(transform_.pos, movePow);
@@ -316,24 +315,26 @@ void Camera::RotGamePad(bool isLimit)
 	auto& ins = InputManager::GetInstance();
 
 	// 右スティックの傾き
-	VECTOR dir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::LEFT);
+	VECTOR dir = ins.GetAlgKeyDirXZ(InputManager::PAD_NO::PAD1, InputManager::JOYPAD_ALGKEY::RIGHT);
 
-	// 右スティック左右の傾き
-	angles_.y += dir.x * ROT_POW_RAD;
-
-	// 右スティック上下の傾き
-	angles_.x += dir.z * ROT_POW_RAD;
-	
-	// 角度制限
-	if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
+	if (!AsoUtility::EqualsVZero(dir))
 	{
-		angles_.x = -LIMIT_X_DW_RAD;
-	}
-	if (isLimit && angles_.x > LIMIT_X_UP_RAD)
-	{
-		angles_.x = LIMIT_X_UP_RAD;
-	}
+		// 右スティック左右の傾き
+		angles_.y += dir.x * ROT_POW_RAD;
 
+		// 右スティック上下の傾き
+		angles_.x += dir.z * ROT_POW_RAD;
+
+		// 角度制限
+		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
+		{
+			angles_.x = -LIMIT_X_DW_RAD;
+		}
+		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
+		{
+			angles_.x = LIMIT_X_UP_RAD;
+		}
+	}
 }
 
 void Camera::Collision(void)

@@ -120,9 +120,6 @@ void InputManager::Update(void)
 
 	// ゲームパッド入力判定更新
 	SetPadInState(PAD_NO::PAD1);
-	SetPadInState(PAD_NO::PAD2);
-	SetPadInState(PAD_NO::PAD3);
-	SetPadInState(PAD_NO::PAD4);
 }
 
 void InputManager::Destroy(void)
@@ -281,7 +278,7 @@ void InputManager::SetPadInState(PAD_NO jPadNum)
 	}
 }
 
-InputManager::Joypad& InputManager::GetPadInputState(PAD_NO _padNum)
+InputManager::Joypad InputManager::GetPadInputState(PAD_NO _padNum)
 {
 	/* コントローラ入力取得処理 */
 
@@ -599,7 +596,7 @@ int InputManager::PadAlgKeyY(int _padNum, int _algKey)const
 	return padInfos_[_padNum].algKeyY[_algKey];
 }
 
-const VECTOR& InputManager::GetAlgKeyDirXZ(PAD_NO _padNum, JOYPAD_ALGKEY _algKey) const
+VECTOR InputManager::GetAlgKeyDirXZ(PAD_NO _padNum, JOYPAD_ALGKEY _algKey) const
 {
 	VECTOR ret = {};
 

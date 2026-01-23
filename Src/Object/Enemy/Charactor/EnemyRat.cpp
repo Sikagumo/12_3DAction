@@ -11,7 +11,7 @@
 #include "../../Player/Player.h"
 
 EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player& _player):
-	EnemyBase(data, _player),
+	EnemyBase::EnemyBase(data, _player),
 	state_(STATE::NONE),
 	step_(0.0f)
 {

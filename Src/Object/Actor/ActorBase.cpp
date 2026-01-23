@@ -47,13 +47,14 @@ void ActorBase::Draw(void)
 	// 後描画
 	DrawLate();
 
-#ifdef _DEBUG
-	// 所有しているコライダの描画
-	for (const auto& [type, collider] : ownColliders_)
+	if (sceneMng_.GetIsDebugMode())
 	{
-		collider->Draw();
+		// 所有しているコライダの描画
+		for (const auto& [type, collider] : ownColliders_)
+		{
+			collider->Draw();
+		}
 	}
-#endif // _DEBUG
 }
 
 void ActorBase::Release(void)

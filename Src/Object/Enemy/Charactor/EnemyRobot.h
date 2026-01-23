@@ -71,7 +71,7 @@ protected:
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
 
-	//bool IsSearchConeModel(void);
+	bool IsSearchConeModel(void);
 
 
 private:
@@ -103,12 +103,13 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 30.0f;
 
+
 	// 巡回時の視野モデルの大きさ
 	static constexpr VECTOR VIEW_RANGE_SCL = { 8.0f, 4.0f, 2.0f };
 
 	// 巡回時の視野モデルの傾きX
-	static constexpr float VIEW_RANGE_ROT_X = 26.0f * (DX_PI_F / 180.0f);
-	static constexpr float VIEW_RANGE_LOCAL_ROT_X = 90.0f * (DX_PI_F / 180.0f);
+	static constexpr float VIEW_RANGE_ROT_X = 26.0f;
+	static constexpr float VIEW_RANGE_LOCAL_ROT_X = 90.0f;
 
 	// 巡回時の視野モデル位置同期用フレーム番号
 	static constexpr int VIEW_RANGE_SYNC_FRAME_IDX = 6;

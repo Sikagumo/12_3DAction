@@ -39,6 +39,7 @@ void TitleScene::Init(void)
 							   SPHERE_POS);
 	spherePlant_.Update();
 
+	// プレイヤー
 	player_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::MODEL_PLAYER));
 	player_.InitTransform(PLAYER_SCALE,
 						  Quaternion::Euler(PLAYER_ROT.x, PLAYER_ROT.y, PLAYER_ROT.z),
@@ -49,6 +50,7 @@ void TitleScene::Init(void)
 	playerAnim_->AddExternal(0, 30.0f, resMng_.GetHandleId(ResourceManager::SRC::ANIM_PLAYER_RUN));
 	playerAnim_->Play(0);
 
+	// スカイドーム
 	skyDome_ = new SkyDome(empty_);
 	skyDome_->Init();
 

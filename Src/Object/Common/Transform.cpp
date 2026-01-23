@@ -20,9 +20,6 @@ Transform::Transform(void)
 {
 }
 
-Transform::~Transform(void)
-{
-}
 
 void Transform::Update(void)
 {
@@ -54,12 +51,13 @@ void Transform::Update(void)
 void Transform::DrawModelDir(void)
 {
 #ifdef _DEBUG
+	SetUseLighting(FALSE);
 	const float DRAW_OFFSET = 65.0f;
 	const float DRAW_OFFSET_LOCAL = 25.0f;
 	const float DRAW_RADIUS = 10.0f;
 	const float DRAW_RADIUS_LOCAL = 15.0f;
-	const float DRAW_DIM = 10;
-	const unsigned int SPEC_COLOR = 0xaaaaaa;
+	const int DRAW_DIM = 10;
+	const unsigned int SPEC_COLOR = 0x555555;
 	VECTOR drawPos;
 	VECTOR drawPosLocal;
 	unsigned int drawColor;
@@ -81,6 +79,8 @@ void Transform::DrawModelDir(void)
 	drawColor = 0x0000aa;
 	DrawSphere3D(drawPos, DRAW_RADIUS, DRAW_DIM, drawColor, SPEC_COLOR, true);
 	DrawLine3D(pos, drawPos, drawColor);
+
+	SetUseLighting(TRUE);
 #endif
 }
 

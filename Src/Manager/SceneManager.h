@@ -60,6 +60,9 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+	// デバッグ状態取得
+	bool GetIsDebugMode(void) { return isDebugMode_; };
+
 	
 private:
 
@@ -84,7 +87,12 @@ private:
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
 	float deltaTime_;
+
+	bool isDebugMode_;
+
+	int shadowMapHandle_;
 	
+
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
 	SceneManager(void);

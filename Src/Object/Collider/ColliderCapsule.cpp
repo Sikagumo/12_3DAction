@@ -1,6 +1,7 @@
 #include "ColliderCapsule.h"
 #include <DxLib.h>
 #include "../Common/Transform.h"
+#include "./ColliderModel.h"
 
 
 ColliderCapsule::ColliderCapsule(TAG tag, const Transform* follow, const VECTOR& localPosTop, const VECTOR& localPosDown, float radius):
@@ -96,4 +97,67 @@ VECTOR ColliderCapsule::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hi
 		tryCnt++;
 	}
 	return tempTransform.pos;
+}
+
+void ColliderCapsule::PushBackAlongNormal(const ColliderModel* _colliderModel, Transform* _transform, int _maxTryCnt, float _pushDistance, bool isExclude, bool isTarget) const
+{
+	auto hits = MV1CollCheck_Capsule(_colliderModel->GetFollow()->modelId, -1,
+									 GetPosTop(), GetPosDown(), GetRadius());
+
+	for (int i = 0; i < hits.HitNum; i++)
+	{
+		auto hitPoly = hits.Dim[i];
+
+		// 除外フレームは無視
+		/*if (isExclude && colliderModel->IsExcludeFrame(hitPoly.FrameIndex))
+		{
+			continue;
+		}*/
+		// 対象フレーム以外は無視
+		if (isTarget && !_colliderModel->IsTargetFrame(hitPoly.FrameIndex))
+		{
+			continue;
+		}
+
+		// 指定回数と距離で三角形の法線方向に押し戻す
+		_transform->pos = GetPosPushBackAlongNormal(hitPoly, _maxTryCnt, _pushDistance);
+	}
+
+	// 検出した地面ポリゴン情報の後始末
+	MV1CollResultPolyDimTerminate(hits);
+}
+
+bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExcude, bool isTarget) const
+{
+	bool ret = false;
+
+	// ステージモデル(地面)との衝突
+	auto hits = MV1CollCheck_LineDim(
+		colliderModel->GetFollow()->modelId, -1,
+		GetPosTop(), GetPosDown());
+
+	for (int i = 0; i < hits.HitNum; i++)
+	{
+		auto hit = hits.Dim[i];
+
+		// 除外フレームは無視
+		/*if (isExclude && colliderModel->IsExcludeFrame(hit.FrameIndex))
+		{
+			continue;
+		}*/
+		// 対象フレーム以外は無視
+		if (isTarget && !colliderModel->IsTargetFrame(hit.FrameIndex))
+		{
+			continue;
+		}
+
+		// 衝突！
+		ret = true;
+		break;
+	}
+
+	// 検出した地面ポリゴン情報の後始末
+	MV1CollResultPolyDimTerminate(hits);
+
+	return ret;
 }

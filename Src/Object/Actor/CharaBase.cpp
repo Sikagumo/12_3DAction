@@ -11,9 +11,10 @@
 
 
 CharaBase::CharaBase(void) :
-	ActorBase(),
+	ActorBase::ActorBase(),
 	isJump_(false),
 	jumpPow_(0.0f),
+	moveSpeed_(0.0f),
 	stepJump_(0.0f),
 	shadowHandle_(-1),
 	prevPos_(AsoUtility::VECTOR_ZERO),
@@ -361,8 +362,11 @@ void CharaBase::DrawShadowRound(void)
 
 void CharaBase::DrawPre(void)
 {
-	// ƒ‚ƒfƒ‹Œü‚«•`‰æ
-	transform_.DrawModelDir();
+	if (sceneMng_.GetIsDebugMode())
+	{
+		// ƒ‚ƒfƒ‹Œü‚«•`‰æ
+		transform_.DrawModelDir();
+	}
 }
 
 void CharaBase::DelayRotate(void)

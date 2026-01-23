@@ -5,6 +5,7 @@
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
 #include "../Scene/DebugScene.h"
+#include "./InputManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -49,7 +50,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// 初期シーンの設定
-	DoChangeScene(SCENE_ID::GAME);
+	DoChangeScene(sceneId_);
 
 }
 
@@ -75,22 +76,32 @@ void SceneManager::Init3D(void)
 	SetUseLighting(true);
 	
 	// ライトの設定
-	ChangeLightTypeDir({ 0.3f, -0.7f, 0.8f });
+	const VECTOR LIGHT_DIR = VGet(0.3f, -0.7f, 0.8f);
+	ChangeLightTypeDir(LIGHT_DIR);
 
 	// フォグ設定
 	SetFogEnable(true);
-	SetFogColor(5, 5, 5);
-	SetFogStartEnd(10000.0f, 20000.0f);
 
+
+	SetFogColor(255,255, 255);
+	const float FOG_START = 10000.0f;
+	const float FOG_END  = 15000.0f;
+	SetFogStartEnd(FOG_START, FOG_END);
+
+	// シャドウマップが想定するライトの方向もセット
+	//const VECTOR SHADOW_DIR = VGet(0.0f, -0.7f, 0.0f);
+	//SetShadowMapLightDirection(shadowMapHandle_, SHADOW_DIR);
+
+	// シャドウマップに描画する範囲を設定
+	//const VECTOR SHADOW_AREA_MIN = VGet(-850.0f, -1.0f, -850.0f);
+	//const VECTOR SHADOW_AREA_MAX = VGet(850.0f, 1000.0f, 850.0f);
+	//SetShadowMapDrawArea(shadowMapHandle_, SHADOW_AREA_MIN, SHADOW_AREA_MAX);
 }
 
 void SceneManager::Update(void)
 {
 
-	if (scene_ == nullptr)
-	{
-		return;
-	}
+	if (scene_ == nullptr) { return; }
 
 	// デルタタイム
 	auto nowTime = std::chrono::system_clock::now();
@@ -114,6 +125,12 @@ void SceneManager::Update(void)
 	// カメラ更新
 	camera_->Update();
 
+#ifdef _DEBUG
+	if (InputManager::GetInstance().KeyIsTrgDown(KEY_INPUT_DELETE))
+	{
+		//isDebugMode_ = !isDebugMode_;
+	}
+#endif
 }
 
 void SceneManager::Draw(void)
@@ -132,8 +149,14 @@ void SceneManager::Draw(void)
 	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
+	// シャドウマップへの描画の準備
+	//ShadowMap_DrawSetup(shadowMapHandle_);
+
 	// 各シーンの描画処理
 	scene_->Draw();
+
+	// シャドウマップへの描画を終了
+	//ShadowMap_DrawEnd();
 
 	// カメラ描画
 	camera_->DrawDebug();
@@ -154,6 +177,9 @@ void SceneManager::Destroy(void)
 	{
 		delete scene_;
 	}
+
+	// シャドウマップの削除
+	//DeleteShadowMap(shadowMapHandle_);
 
 	// フェード機能の解放
 	delete fader_;
@@ -196,22 +222,22 @@ Camera* SceneManager::GetCamera(void) const
 	return camera_;
 }
 
-SceneManager::SceneManager(void)
+SceneManager::SceneManager(void):
+	sceneId_(SCENE_ID::NONE),
+	waitSceneId_(SCENE_ID::NONE),
+	scene_(nullptr), fader_(nullptr),
+	camera_(nullptr),
+	deltaTime_(1.0f / 60.0f),
+	isSceneChanging_(false),
+	isDebugMode_(false)
 {
+	bool isDebug = false;
 
-	sceneId_ = SCENE_ID::NONE;
-	waitSceneId_ = SCENE_ID::NONE;
+#ifdef _DEBUG
+	//isDebug = true;
+#endif
 
-	scene_ = nullptr;
-	fader_ = nullptr;
-
-	isSceneChanging_ = false;
-
-	// デルタタイム
-	deltaTime_ = 1.0f / 60.0f;
-
-	camera_ = nullptr;
-
+	isDebugMode_ = isDebug;
 }
 
 void SceneManager::ResetDeltaTime(void)

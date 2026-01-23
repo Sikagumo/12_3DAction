@@ -19,7 +19,8 @@ public:
 	/// @brief コントローラー認識番号
 	enum class PAD_NO
 	{
-		PAD1 = 1,         // パッド１入力
+		PAD_KEY,
+		PAD1,			  // パッド１入力
 		PAD2,             // パッド２入力
 		PAD3,             // パッド３入力
 		PAD4,             // パッド４入力
@@ -331,14 +332,7 @@ public:
 	/// @brief コントローラのスティックの傾き方向を取得(XZ平面)
 	/// @param _padNum コントローラの対象
 	/// @param _algKey スティック番号
-	const VECTOR& GetAlgKeyDirXZ(PAD_NO _padNum, JOYPAD_ALGKEY _algKey)const;
-
-	/// <summary>
-	/// いずれかのコントローラの入力判定
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns></returns>
-	bool PadAnyInput(void)const;
+	VECTOR GetAlgKeyDirXZ(PAD_NO _padNum, JOYPAD_ALGKEY _algKey)const;
 
 	/// @brief 入力状態割り当て
 	void SetInputType(INPUT_TYPE _type) { inputType_ = _type; };
@@ -436,7 +430,7 @@ private:
 
 	/// @brief コントローラの入力情報
 	/// @param _padNum コントローラの対象
-	Joypad& GetPadInputState(PAD_NO _padNum);
+	Joypad GetPadInputState(PAD_NO _padNum);
 
 	/// <summary>
 	/// 接続されたコントローラを識別して取得

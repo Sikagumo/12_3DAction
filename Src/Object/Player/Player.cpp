@@ -12,7 +12,6 @@
 
 Player::Player(void)
 	:CharaBase::CharaBase(),
-	moveSpeed_(0.0f),
 	isDash_(false)
 {
 }
@@ -133,10 +132,11 @@ void Player::ProcessMove(void)
 
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
+	bool isInputPad = (input.PadIsBtnNew(1, static_cast<int>(InputManager::PAD_BTN::R_TRIGGER)) && GetJoypadNum() > 0 ||
+					   input.PadIsBtnNew(1, static_cast<int>(InputManager::PAD_BTN::L_STICK)) && GetJoypadNum() > 0);
 	// ダッシュ処理
 	isDash_ = (input.KeyIsNew(KEY_INPUT_LSHIFT) && GetJoypadNum() <= 0
-			   || input.PadIsBtnNew(1, static_cast<int>(InputManager::PAD_BTN::R_TRIGGER))
-			      && GetJoypadNum() > 0);
+			   || isInputPad);
 
 
 	if (GetJoypadNum() > 0)
@@ -227,6 +227,13 @@ void Player::ProcessJump(void)
 
 		// アニメーション再生
 		PlayAnim(ANIM_TYPE::JUMP, false);
+	}
+
+	// Y軸制限
+	const float LIMIT_POS_Y = -1500.0f;
+	if (transform_.pos.y < LIMIT_POS_Y)
+	{
+		transform_.pos.y = -(LIMIT_POS_Y);
 	}
 }
 

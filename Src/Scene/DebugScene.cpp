@@ -40,24 +40,26 @@ void DebugScene::Draw(void)
 {
 	// ステージ描画
 	stage_->Draw();
-#ifdef _DEBUG
-	// デバッグポイント群を球体描画
-	int y = 20;
-	for (const auto& point : points_)
+
+	if (SceneManager::GetInstance().GetIsDebugMode())
 	{
-		DrawSphere3D(
-			point,
-			30.0f,
-			16,
-			GetColor(255, 0, 0),
-			GetColor(255, 0, 0),
-			false);
-		DrawFormatString(20, y,
-			0x000000, "座標(%.2f, %.2f, %.2f)",
-			point.x, point.y, point.z);
-		y += 20;
+		// デバッグポイント群を球体描画
+		int y = 20;
+		for (const auto& point : points_)
+		{
+			DrawSphere3D(
+				point,
+				30.0f,
+				16,
+				GetColor(255, 0, 0),
+				GetColor(255, 0, 0),
+				false);
+			DrawFormatString(20, y,
+				0x000000, "座標(%.2f, %.2f, %.2f)",
+				point.x, point.y, point.z);
+			y += 20;
+		}
 	}
-#endif
 }
 
 void DebugScene::Release(void)

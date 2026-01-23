@@ -91,10 +91,6 @@ private:
 	// 移動速度(ダッシュ)
 	static constexpr float SPEED_DASH = 10.0f;
 
-
-	// 移動スピード
-	float moveSpeed_;
-
 	bool isDash_;
 
 

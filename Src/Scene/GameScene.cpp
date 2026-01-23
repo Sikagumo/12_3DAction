@@ -39,9 +39,11 @@ void GameScene::Init(void)
 
 	enemyMng_ = new EnemyManager(player_);
 	enemyMng_->Init();
+
+	// “–‚½‚è”»’è“o˜^
 	enemyMng_->AddHitCollider(stageCollider);
 	enemyMng_->AddHitCollider(player_->GetOwnCollider(static_cast<int>(CharaBase::COLLIDER_TYPE::CAPSULE)));
-
+		
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
 

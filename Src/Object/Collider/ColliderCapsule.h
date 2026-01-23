@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "ColliderBase.h"
 class Transform;
+class ColliderModel;
 
 class ColliderCapsule : public ColliderBase
 {
@@ -42,8 +43,16 @@ public:
 		const MV1_COLL_RESULT_POLY& hitColPoly,
 		int maxTryCnt,
 		float pushDistance) const;
+
+	// 指定された回数と距離で三角形の法線方向に押し戻す
+	void PushBackAlongNormal(
+		const ColliderModel* _colliderModel, Transform* _transform,
+		int _maxTryCnt, float _pushDistance,
+		bool isExclude = false, bool isTarget = false) const;
 	
-	//bool IsHit(const ColliderModel* colliderModel, bool isExcude);
+	// モデルと衝突しているか否か
+	bool IsHit(const ColliderModel* colliderModel,
+				bool isExcude = false, bool isTarget = false) const;
 
 protected:
 

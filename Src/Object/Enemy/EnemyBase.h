@@ -60,9 +60,10 @@ protected:
 	// ˆÚ“®”ÍˆÍ
 	float moveRange_;
 
+	bool isNoticeVision_;
 
-	// ó‘ÔŠÇ—
-	int stateBase_;
+	bool isNoticeHearing_;
+	static constexpr float VIEW_RANGE = 100.0f;
 
 	// ó‘ÔŠÇ—(ó‘Ô‘JˆÚ‰Šúˆ—)
 	std::map<int, std::function<void(void)>> stateChanges_;
@@ -88,4 +89,8 @@ protected:
 
 	// ˆÚ“®‰Â”\”ÍˆÍ”»’è
 	bool InMovableRange(void) const;
+
+	void Search(void);
+
+	void SearchField(void);
 };

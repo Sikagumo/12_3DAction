@@ -12,33 +12,15 @@
 
 EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, Player& _player)
 	:
-	EnemyBase(data, _player),
+	EnemyBase::EnemyBase(data, _player),
 	state_(STATE::NONE),
 	step_(0.0f),
 	wayPoints_(),
 	activeWayPointIndex_(0),
-	nextWayPoint_(AsoUtility::VECTOR_ZERO)
+	nextWayPoint_(AsoUtility::VECTOR_ZERO),
+	viewRangeTransform_(Transform())
 {
 
-}
-
-void EnemyRobot::Draw(void)
-{
-	// 基底クラスの描画処理
-	CharaBase::Draw();
-
-	// 視野(円錐)の描画
-	SetUseLighting(FALSE);
-	MV1DrawModel(viewRangeTransform_.modelId);
-	SetUseLighting(TRUE);
-
-#ifdef _DEBUG
-	// 巡回ルート描画
-		for (const auto& point : wayPoints_)
-		{
-			DrawSphere3D(point, 50.0f, 10, 0x0000ff, 0x0000ff, false);
-		}
-#endif // _DEBUG
 }
 
 
@@ -78,7 +60,12 @@ void EnemyRobot::InitCollider(void)
 													  COL_CAPSULE_DOWN_LOCAL_POS, COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::VIEW_RANGE, &transform_);
+
+	// DxLib側の衝突情報セットアップ
+	MV1SetupCollInfo(viewRangeTransform_.modelId);
+
+	// モデルのコライダ割り当て
+	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::VIEW_RANGE, &viewRangeTransform_);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::VIEW_RANGE), colModel);
 }
 
@@ -171,32 +158,53 @@ void EnemyRobot::UpdateProcess(void)
 }
 void EnemyRobot::UpdateProcessPost(void)
 {
-	VECTOR framePos = MV1GetFramePosition(transform_.modelId, VIEW_RANGE_SYNC_FRAME_IDX);
-	viewRangeTransform_.pos = framePos;
+	EnemyBase::UpdateProcessPost();
 
-	viewRangeTransform_.quaRot = Quaternion::AngleAxis(VIEW_RANGE_ROT_X, AsoUtility::AXIS_X);
+
+	viewRangeTransform_.pos = MV1GetFramePosition(transform_.modelId, VIEW_RANGE_SYNC_FRAME_IDX);
+
+	viewRangeTransform_.quaRot = transform_.quaRot.Mult(Quaternion::AngleAxis(VIEW_RANGE_ROT_X, AsoUtility::AXIS_X));
+
 	viewRangeTransform_.Update();
 }
-/*
+
 bool EnemyRobot::IsSearchConeModel(void)
 {
 	bool ret = false;
 
-	ColliderModel* colliderModel = dynamic_cast<ColliderModel>(ownColliders_.at(viewRangeType));
+	// 視野モデルコライダ
+	int viewRangeType = static_cast<int>(COLLIDER_TYPE::VIEW_RANGE);
+
+	// 視野モデルコライダが無ければ処理を抜ける
+	if (ownColliders_.count(viewRangeType) == 0) { return ret; }
+
+	// 視野モデルコライダ情報
+	ColliderModel* colliderModel = dynamic_cast<ColliderModel*>(ownColliders_.at(viewRangeType));
 
 	if (colliderModel == nullptr) { return ret; }
 
-	for(const auto& hitCol : hitColliders_)
+	// 衝突情報の更新
+	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
+
+
+	// 登録されている衝突物を全てチェック
+	for (const auto& hitCol : hitColliders_)
 	{
+		// モデル以外はスキップ
 		if (hitCol->GetTag() != ColliderBase::TAG::PLAYER) { continue; }
 
+		// 派生クラスへキャスト
 		const ColliderCapsule* colliderCapsule = dynamic_cast<const ColliderCapsule*>(hitCol);
 
-		
+		if (colliderCapsule == nullptr) { continue; }
 
+		if (colliderCapsule->IsHit(colliderModel, false, false))
+		{
+			return true;
+		}
 	}
-	return ret;
-}*/
+	return	ret;
+}
 
 void EnemyRobot::ChangeState(STATE state)
 {
@@ -223,7 +231,6 @@ void EnemyRobot::ChangeStateThink(void)
 	{
 		ChangeState(STATE::PATROL);
 	}
-	ChangeState(STATE::PATROL);
 }
 void EnemyRobot::ChangeStateIdle(void)
 {
@@ -331,11 +338,11 @@ void EnemyRobot::UpdateIdle(void)
 	}
 
 	// プレイヤー索敵
-	/*
+	
 	if (IsSearchConeModel())
 	{
 		ChangeState(STATE::ALERT);
-	}*/
+	}
 }
 void EnemyRobot::UpdatePatrol(void)
 {
@@ -361,11 +368,11 @@ void EnemyRobot::UpdatePatrol(void)
 	
 
 	// プレイヤー索敵
-	/*
+	
 	if (IsSearchConeModel())
 	{
-		//ChangeState(STATE::ALERT);
-	}*/
+		ChangeState(STATE::ALERT);
+	}
 }
 void EnemyRobot::SetMoveDirPatrol(void)
 {
@@ -407,4 +414,27 @@ void EnemyRobot::UpdateKnockBack(void)
 }
 void EnemyRobot::UpdateEnd(void)
 {
+}
+
+
+void EnemyRobot::Draw(void)
+{
+	// 基底クラスの描画処理
+	CharaBase::Draw();
+
+	// 視野(円錐)の描画
+	SetUseLighting(FALSE);
+	MV1DrawModel(viewRangeTransform_.modelId);
+	const float alphaRate = 0.5f;
+	MV1SetOpacityRate(viewRangeTransform_.modelId, alphaRate);
+	SetUseLighting(TRUE);
+
+	if (sceneMng_.GetIsDebugMode())
+	{
+		// 巡回ルート描画
+		for (const auto& point : wayPoints_)
+		{
+			//DrawSphere3D(point, 50.0f, 10, 0x0000ff, 0x0000ff, false);
+		}
+	}
 }

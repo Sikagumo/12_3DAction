@@ -89,10 +89,11 @@ void Application::Run(void)
 
 		sceneManager.Draw();
 
-#ifdef _DEBUG
-		// •½‹ÏFPS•`‰æ
-		fpsController_->Draw();
-#endif // _DEBUG
+		if (sceneManager.GetIsDebugMode())
+		{
+			// •½‹ÏFPS•`‰æ
+			fpsController_->Draw();
+		}
 
 		ScreenFlip();
 
